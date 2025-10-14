@@ -28,6 +28,9 @@ let package = Package(
                 .product(name: "WinAppSDK", package: "swift-windowsappsdk"),
                 .product(name: "WinUI", package: "swift-winui"),
             ],
+            resources: [
+                .copy("Assets")
+            ],
             linkerSettings: GUILinkerSettings
         ), 
     ]

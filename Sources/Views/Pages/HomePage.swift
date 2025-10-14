@@ -62,7 +62,7 @@ class HomePage: Grid {
         
         // 创建主面板
         let mainPanel = createMainPanel()
-        Grid.setRow(mainPanel, 0)
+        try? Grid.setRow(mainPanel, 0)
         grid.children.append(mainPanel)
         
         return grid
@@ -144,8 +144,8 @@ class HomePage: Grid {
         
         for (index, card) in cards.enumerated() {
             let cardButton = createCard(title: card.0, description: card.1, icon: card.2)
-            Grid.setColumn(cardButton, Int32(index))
-            Grid.setRow(cardButton, 0)
+            try? Grid.setColumn(cardButton, Int32(index))
+            try? Grid.setRow(cardButton, 0)
             grid.children.append(cardButton)
         }
         

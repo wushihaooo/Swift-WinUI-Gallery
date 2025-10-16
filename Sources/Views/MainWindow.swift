@@ -122,6 +122,18 @@ class MainWindow: Window {
         try? Grid.setRow(titleBar, 0) // 告诉titleBar它应该在第0行，所以这里是类方法。
     }
 
+
+
+    private func setupSubCategories(category: Category, navigationViewItem: NavigationViewItem) {
+        if category.subCategories.isEmpty { return }
+        for subCategory: any SubCategory in category.subCategories {
+            let subCategoryItem = NavigationViewItem()
+            subCategoryItem.tag = Uri("xca://\(subCategory.rawValue)")
+            subCategoryItem.content = subCategory.text
+            navigationViewItem.menuItems.append(subCategoryItem)
+        }
+    }
+
     private func setupNavigationView() {
         self.navigationView.paneDisplayMode = .left
         self.navigationView.isSettingsVisible = true
@@ -136,14 +148,7 @@ class MainWindow: Window {
             icon.glyph = c.glyph
             navigationViewItem.icon = icon
             navigationViewItem.content = c.text
-            if c.rawValue == "collections" {
-                for collection in Fundamentals.allCases {
-                    let collectionItem = NavigationViewItem()
-                    collectionItem.tag = Uri("xca://\(c.rawValue)/\(collection.rawValue)")
-                    collectionItem.content = collection.text
-                    navigationViewItem.menuItems.append(collectionItem)
-                }
-            }
+            setupSubCategories(category: c, navigationViewItem: navigationViewItem)
             navigationView.menuItems.append(navigationViewItem)
         }
         // self.navigationView.header = Category.allCases[0].text

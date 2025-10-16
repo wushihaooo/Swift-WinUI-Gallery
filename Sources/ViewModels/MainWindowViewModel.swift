@@ -2,9 +2,8 @@ import Foundation
 
 class MainWindowViewModel: BaseViewModel, @unchecked Sendable {
     // MARK: - Properties
-    
-    private var _selectedCategory: Category = .home
-    var selectedCategory: Category {
+    private var _selectedCategory: any Category = MainCategory.home
+    var selectedCategory: any Category {
         get { _selectedCategory }
         set {
             _selectedCategory = newValue
@@ -14,27 +13,19 @@ class MainWindowViewModel: BaseViewModel, @unchecked Sendable {
     }
 
     // MARK: - Commands
-    lazy var navigateCommand: CommandWithParameter<Category> = {
-        return CommandWithParameter<Category>(action: { [weak self] category in
+    lazy var navigateCommand: CommandWithParameter<any Category> = {
+        return CommandWithParameter<any Category>(action: { [weak self] category in
             self?.navigate(to: category)
         })
     }()
 
-    lazy var refreshCommand: Command = {
-        return Command(action: { [weak self] in
-            self?.refresh()
-        })
-    }()
-
-    // MARK: -Initialization
-
+    // MARK: - Initialization
     override init() {
         super.init()
     }
 
     // MARK: - Methods
-
-    private func navigate(to category: Category) {
+    private func navigate(to category: any Category) {
         selectedCategory = category
     }
 
@@ -42,10 +33,4 @@ class MainWindowViewModel: BaseViewModel, @unchecked Sendable {
         // 根据选中的分类更新导航的状态
         print("Navigating to: \(selectedCategory)")
     }
-
-    private func refresh() {
-        // 刷新数据
-        print("Refreshing data...")
-    }
-
 }

@@ -1,11 +1,13 @@
 import Foundation
 
-protocol SubCategory: CaseIterable, Codable, RawRepresentable, Equatable where RawValue == String {
+protocol Category: CaseIterable, Codable, RawRepresentable, Equatable where RawValue == String {
     var text: String { get }
     var sortIndex: Int { get }
+    var canSelect: Bool { get }
+    var subCategories: [any Category] { get }
 }
 
-extension SubCategory {
+extension Category {
     var text: String { self.rawValue.capitalized }
     var sortIndex: Int {
         if let index = Self.allCases.firstIndex(of: self) {
@@ -13,9 +15,11 @@ extension SubCategory {
         }
         return 0
     }
+    var canSelect: Bool { true }
+    var subCategories: [any Category] { [] }
 }
 
-enum Category: String, CaseIterable, Codable {
+enum MainCategory: String, Category {
     case home
     case fundamentals
     case design
@@ -67,7 +71,7 @@ enum Category: String, CaseIterable, Codable {
         Self.allCases.firstIndex(of: self) ?? 0
     }
 
-    var subCategories: [any SubCategory] {
+    var subCategories: [any Category] {
         switch self {
         case .fundamentals:
             return FundamentalsCategory.allCases
@@ -109,84 +113,93 @@ enum Category: String, CaseIterable, Codable {
             return []
         }
     }
+
+    var canSelect: Bool {
+        switch self {
+        case .home, .all:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
-enum FundamentalsCategory: String, SubCategory {
+enum FundamentalsCategory: String, Category {
     case resources, styles, binding, templates, customUserControls, scratchPad
 }
 
-enum DesignCategory: String , SubCategory {
+enum DesignCategory: String , Category {
     case color, geometry, iconography, spacing, typography
 }
 
-enum AccessibilityCategory: String, SubCategory {
+enum AccessibilityCategory: String, Category {
     case screenReaderSupport, keyBoardSupport, colorContrast
 }
 
 
-enum BasicInputCategory: String, SubCategory {
+enum BasicInputCategory: String, Category {
     case button, dropDownButton, HyperlinkButton, repeatButton, toggleButton, splitButton, toggleSplitButton, checkBox, colorPicker
     case comboBox, radioButton, ratingControl, slider, toggleSwitch
 }
 
-enum CollectionsCategory: String, SubCategory {
+enum CollectionsCategory: String, Category {
     case flipView, gridView, itemsRepeater, itemsView, listBox, listView, pullToRefresh, treeView
 }
 
 
-enum DataTimeCategory: String, SubCategory {
+enum DataTimeCategory: String, Category {
     case calendarDataPicker, calendarView, datePicker, timePicker
 }
 
-enum DialogsFlyoutsCategory: String, SubCategory {
+enum DialogsFlyoutsCategory: String, Category {
     case contentDialog, flyout, popup, teachingTip
 }
 
-enum LayoutCategory: String, SubCategory {
+enum LayoutCategory: String, Category {
     case border, canvas, expander, grid, radioButtons, relativePanel, variableSizedWrapGrid, viewBox
 }
 
-enum MediaCategory: String, SubCategory {
-    case animatedVisualPlayer, captureElementCameraPreview, image, mapControl, mediaPlayerElement 
+enum MediaCategory: String, Category {
+    case animatedVisualPlayer, captureElementCameraPreview, image, mapControl, mediaPlayerElement
     case personPicture, sound, webView2
 }
 
-enum MenusToolbarsCategory: String, SubCategory {
+enum MenusToolbarsCategory: String, Category {
     case appBarButton, appBarSeparator, appBarToggleButton, commandBar, commandBarFlyout, menuBar, menuFlyout, swipeControl
     case standardUICommand, XamlUICommand
 }
 
-enum MotionCategory: String, SubCategory {
+enum MotionCategory: String, Category {
     case animationInterop, connectedAnimation, easingFunctions
     case implicitTransitions, pageTransitions, themeTransitions, parallaxView
 }
 
-enum NavigationViewCategory: String, SubCategory {
+enum NavigationViewCategory: String, Category {
     case breadcrumbBar, navigationView, pivot, selectorBar, tabView
 }
 
-enum ScrollingCategory: String, SubCategory {
+enum ScrollingCategory: String, Category {
     case annotatedScrollBar, pipsPager, scrollView, scrollViewer, semanticZoom
 }
 
-enum StatusInfoCategory: String, SubCategory {
+enum StatusInfoCategory: String, Category {
     case infoBadge, infoBar, progressBar, progressRing, toolTip
 }
 
-enum StylesCategory: String, SubCategory {
+enum StylesCategory: String, Category {
     case AcrylicBrush, animatedIcon, compactSizing, iconElement, ling, shape, radialGradientBrush
     case systemBackdropsMicaAcrylic, themeShadow
 }
 
 
-enum SystemCategory: String, SubCategory {
+enum SystemCategory: String, Category {
     case appNotifications, badgeNotifications, clipboard, contentIsland, filePicker
 }
 
-enum TextCategory: String, SubCategory {
+enum TextCategory: String, Category {
     case autoSuggestBox, numberBox, passwordBox, richEditBox, richTextBlock, textBlock, textBox
 }
 
-enum WindowingCategory: String, SubCategory {
+enum WindowingCategory: String, Category {
     case appWindow, multipleWindows, titleBar
 }

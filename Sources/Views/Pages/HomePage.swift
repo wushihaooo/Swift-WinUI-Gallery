@@ -1,7 +1,7 @@
 import WinUI
 import WinAppSDK
 
-class HomePage: Grid {
+open class HomePage: Grid {
     // MARK: - Properties
     private var scrollViewer: ScrollViewer!
     private var rootGrid: Grid!

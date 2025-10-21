@@ -28,6 +28,7 @@ let package = Package(
                 .product(name: "WinAppSDK", package: "swift-windowsappsdk"),
                 .product(name: "WinUI", package: "swift-winui"),
             ],
+            exclude: ["Sources/Views/Pages/navigation/README.md"],
             resources: [
                 .copy("Assets")
             ],

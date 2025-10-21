@@ -235,6 +235,20 @@ class MainWindow: Window {
                 rootFrame.content = AllPage()
             case CollectionsCategory.listView:
                 rootFrame.content = ListViewPage()
+            case ScrollingCategory.annotatedScrollBar:
+                rootFrame.content = AnnotatedScrollBarPage()
+            case LayoutCategory.grid:
+                rootFrame.content = GridPage()
+            case LayoutCategory.border:
+                rootFrame.content = BorderPage()
+            case LayoutCategory.canvas:
+                rootFrame.content = CanvasPage()
+            case LayoutCategory.expander:
+                rootFrame.content = ExpanderPage()
+            case LayoutCategory.radioButtons:
+                rootFrame.content = RadioButtonsPage()
+            case LayoutCategory.relativePanel:
+                rootFrame.content = RelativePanelPage()
             case NavigationViewCategory.breadcrumbBar:
                 rootFrame.content = BreadcrumbBarPage()
             case NavigationViewCategory.navigationView:

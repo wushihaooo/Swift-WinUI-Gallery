@@ -235,6 +235,16 @@ class MainWindow: Window {
                 rootFrame.content = AllPage()
             case CollectionsCategory.listView:
                 rootFrame.content = ListViewPage()
+            case NavigationViewCategory.breadcrumbBar:
+                rootFrame.content = BreadcrumbBarPage()
+            case NavigationViewCategory.navigationView:
+                rootFrame.content = NavigationViewPage()
+            case NavigationViewCategory.pivot:
+                rootFrame.content = PivotPage()
+            case NavigationViewCategory.selectorBar:
+                rootFrame.content = SelectorBarPage()
+            case NavigationViewCategory.tabView:
+                rootFrame.content = TabViewPage()
             default:
                 break
             }

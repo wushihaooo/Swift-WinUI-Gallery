@@ -235,6 +235,8 @@ class MainWindow: Window {
                 rootFrame.content = AllPage()
             case CollectionsCategory.listView:
                 rootFrame.content = ListViewPage()
+            case ScrollingCategory.annotatedScrollBar:
+                rootFrame.content = AnnotatedScrollBarPage()
             default:
                 break
             }

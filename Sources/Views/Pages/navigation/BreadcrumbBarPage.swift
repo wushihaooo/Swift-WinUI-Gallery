@@ -143,17 +143,17 @@ class BreadcrumbBarPage: Grid {
         
         <!-- 顶部标题和选项卡 -->
         <StackPanel Spacing="12">
-            <TextBlock Text="BreadcrumbBar" FontSize="32" FontWeight="SemiBold" Foreground="White"/>
+            <TextBlock Text="BreadcrumbBar 面包屑导航" FontSize="32" FontWeight="SemiBold" Foreground="White"/>
             
             <!-- 文档和源代码标签 -->
             <StackPanel Orientation="Horizontal" Spacing="20">
-                <TextBlock Text="Documentation" FontSize="14" Foreground="#0078D4" FontWeight="SemiBold" Padding="0,4,0,4"/>
-                <TextBlock Text="Source" FontSize="14" Foreground="#999999" Padding="0,4,0,4"/>
+                <TextBlock Text="文档" FontSize="14" Foreground="#0078D4" FontWeight="SemiBold" Padding="0,4,0,4"/>
+                <TextBlock Text="源码" FontSize="14" Foreground="#999999" Padding="0,4,0,4"/>
             </StackPanel>
         </StackPanel>
         
         <!-- 描述部分 -->
-        <TextBlock Text="The BreadcrumbBar control provides a common horizontal layout to display the trail of navigation taken to the current location. Resize to see the nodes crumble, starting at the root." 
+        <TextBlock Text="BreadcrumbBar 控件提供常见的水平布局，用于展示到达当前位置的导航路径。调整窗口大小即可观察节点从根开始逐渐折叠。" 
                    FontSize="14" 
                    Foreground="#CCCCCC"
                    TextWrapping="Wrap"
@@ -161,13 +161,13 @@ class BreadcrumbBarPage: Grid {
         
         <!-- 示例 1 -->
         <StackPanel Spacing="12">
-            <TextBlock Text="A BreadcrumbBar control" FontSize="18" FontWeight="SemiBold" Foreground="White"/>
+            <TextBlock Text="BreadcrumbBar 控件示例" FontSize="18" FontWeight="SemiBold" Foreground="White"/>
             
             <Border CornerRadius="4" Padding="16" BorderThickness="1" BorderBrush="#444444">
                 <Border.Background>
                     <SolidColorBrush Color="#2A2A2A"/>
                 </Border.Background>
-                <TextBlock Text="Home > Documents > Design > Northwind > Images > Folder1 > Folder2 > Folder3" 
+                <TextBlock Text="主页 > 文档 > 设计 > Northwind > 图像 > 文件夹1 > 文件夹2 > 文件夹3" 
                            FontSize="14" 
                            Foreground="White"
                            TextWrapping="Wrap"/>
@@ -175,7 +175,7 @@ class BreadcrumbBarPage: Grid {
         </StackPanel>
         
         <!-- Source Code 可折叠部分 -->
-        <Expander Header="Source code" IsExpanded="True">
+        <Expander Header="源代码" IsExpanded="True">
             <Expander.Content>
                 <StackPanel Spacing="8">
                     <!-- 代码标签按钮 -->
@@ -198,13 +198,13 @@ class BreadcrumbBarPage: Grid {
         
         <!-- 示例 2 -->
         <StackPanel Spacing="12">
-            <TextBlock Text="BreadCrumbBar Control with Custom DataTemplate" FontSize="18" FontWeight="SemiBold" Foreground="White"/>
+            <TextBlock Text="带有自定义 DataTemplate 的 BreadcrumbBar" FontSize="18" FontWeight="SemiBold" Foreground="White"/>
             
             <Border CornerRadius="4" Padding="16" BorderThickness="1" BorderBrush="#444444">
                 <Border.Background>
                     <SolidColorBrush Color="#2A2A2A"/>
                 </Border.Background>
-                <TextBlock Text="Home > Folder1 > Folder2 > Folder3" 
+                <TextBlock Text="主页 > 文件夹1 > 文件夹2 > 文件夹3" 
                            FontSize="14" 
                            Foreground="White"
                            TextWrapping="Wrap"/>
@@ -212,7 +212,7 @@ class BreadcrumbBarPage: Grid {
         </StackPanel>
         
         <!-- Reset 按钮 -->
-        <Button Content="Reset sample" Margin="0,12,0,0" Padding="12,8,24,8" Background="#0078D4" Foreground="White"/>
+        <Button Content="重置示例" Margin="0,12,0,0" Padding="12,8,24,8" Background="#0078D4" Foreground="White"/>
         
         <TextBlock Text="" Height="24"/>
     </StackPanel>

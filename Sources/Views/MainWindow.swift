@@ -235,6 +235,10 @@ class MainWindow: Window {
                 rootFrame.content = AllPage()
             case CollectionsCategory.listView:
                 rootFrame.content = ListViewPage()
+            case MenusToolbarsCategory.appBarButton:
+                rootFrame.content = AppBarButtonPage()
+            case MenusToolbarsCategory.appBarSeparator:
+                rootFrame.content = AppBarButtonPage()
             default:
                 break
             }

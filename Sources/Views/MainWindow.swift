@@ -235,6 +235,30 @@ class MainWindow: Window {
                 rootFrame.content = AllPage()
             case CollectionsCategory.listView:
                 rootFrame.content = ListViewPage()
+            case ScrollingCategory.annotatedScrollBar:
+                rootFrame.content = AnnotatedScrollBarPage()
+            case LayoutCategory.grid:
+                rootFrame.content = GridPage()
+            case LayoutCategory.border:
+                rootFrame.content = BorderPage()
+            case LayoutCategory.canvas:
+                rootFrame.content = CanvasPage()
+            case LayoutCategory.expander:
+                rootFrame.content = ExpanderPage()
+            case LayoutCategory.radioButtons:
+                rootFrame.content = RadioButtonsPage()
+            case LayoutCategory.relativePanel:
+                rootFrame.content = RelativePanelPage()
+            case NavigationViewCategory.breadcrumbBar:
+                rootFrame.content = BreadcrumbBarPage()
+            case NavigationViewCategory.navigationView:
+                rootFrame.content = NavigationViewPage()
+            case NavigationViewCategory.pivot:
+                rootFrame.content = PivotPage()
+            case NavigationViewCategory.selectorBar:
+                rootFrame.content = SelectorBarPage()
+            case NavigationViewCategory.tabView:
+                rootFrame.content = TabViewPage()
             case MenusToolbarsCategory.appBarButton:
                 rootFrame.content = AppBarButtonPage()
             case MenusToolbarsCategory.appBarSeparator:

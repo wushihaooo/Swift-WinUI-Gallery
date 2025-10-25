@@ -263,6 +263,26 @@ class MainWindow: Window {
                 rootFrame.content = AppBarButtonPage()
             case MenusToolbarsCategory.appBarSeparator:
                 rootFrame.content = AppBarButtonPage()
+
+            case BasicInputCategory.button:
+                rootFrame.content = ButtonPage()
+            case BasicInputCategory.checkBox:
+                rootFrame.content = CheckBoxPage()
+            case BasicInputCategory.radioButton:
+                rootFrame.content = RadioButtonPage()
+            case BasicInputCategory.toggleSwitch:
+                rootFrame.content = ToggleSwitchPage()
+            case BasicInputCategory.ratingControl:
+                rootFrame.content = RatingControlPage()
+            case BasicInputCategory.toggleButton:
+                rootFrame.content = ToggleButtonPage()
+            case BasicInputCategory.dropDownButton:
+                rootFrame.content = DropDownButtonPage()
+            case BasicInputCategory.HyperlinkButton:
+                rootFrame.content = HyperlinkButtonPage()
+            case BasicInputCategory.splitButton:
+                rootFrame.content = SplitButtonPage()
+                
             default:
                 break
             }

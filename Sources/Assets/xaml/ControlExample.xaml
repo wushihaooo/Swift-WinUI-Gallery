@@ -1,0 +1,162 @@
+<Grid
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="RootPanel"
+    Margin="0,16,0,0"
+    d:DesignHeight="250"
+    d:DesignWidth="1000"
+    IsTabStop="False"
+    mc:Ignorable="d">
+    <Grid x:Name="rootGrid" IsTabStop="False">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            x:Name="HeaderTextPresenter"
+            Margin="0,12"
+            AutomationProperties.HeadingLevel="Level3"/>
+
+        <RichTextBlock
+            x:Name="ErrorTextBlock"
+            Grid.Row="1"
+            Margin="0,0,0,12"
+            IsTextSelectionEnabled="True"
+            Visibility="Collapsed">
+            <Paragraph>
+                This sample requires a later version of Windows to be fully functional.
+            </Paragraph>
+        </RichTextBlock>
+
+        <Grid Grid.Row="2" CornerRadius="8" IsTabStop="False">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid
+                x:Name="ExampleContainer"
+                x:FieldModifier="Public"
+                CornerRadius="8,8,0,0"
+                IsTabStop="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" MaxWidth="320" />
+                    <ColumnDefinition Width="Auto" MaxWidth="320" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Example Display  -->
+                <ContentPresenter
+                    x:Name="ControlPresenter"
+                    Padding="12"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    CornerRadius="8,8,0,0"
+                    IsTabStop="False" />
+
+                <!--  Output Display  -->
+                <StackPanel
+                    x:Name="OutputPresenter"
+                    Grid.Column="1"
+                    Margin="0,12,12,12"
+                    Padding="16"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Stretch"
+                    CornerRadius="8"
+                    Orientation="Vertical"
+                    IsTabStop="False">
+                    <TextBlock Text="Output:" />
+                    
+                </StackPanel>
+
+                <!--  Options Display  -->
+                <ContentPresenter
+                    x:Name="OptionsPresenter"
+                    Grid.Column="2"
+                    Padding="16"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    BorderThickness="1,0,0,0"
+                    IsTabStop="False"/>
+            </Grid>
+            
+
+            <!--  Sample code display  -->
+            <Expander
+                Grid.Row="1"
+                Padding="0"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                CornerRadius="0,0,8,8">
+
+                <Expander.Header>
+                    <TextBlock Text="Source code" />
+                </Expander.Header>
+                <Grid RowSpacing="16" IsTabStop="False">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <SelectorBar
+                        x:Name="SelectorBarControl"
+                        Margin="4,0,0,0">
+                        <SelectorBarItem
+                            x:Name="SelectorBarXamlItem"
+                            Tag="Xaml"
+                            Text="XAML" />
+                        <SelectorBarItem
+                            x:Name="SelectorBarCSharpItem"
+                            Tag="CSharp"
+                            Text="C#" />
+                    </SelectorBar>
+
+                    <Grid Grid.Row="1" IsTabStop="False">
+                        <ContentPresenter x:Name="XamlContentPresenter" Visibility="Collapsed" IsTabStop="False">
+                            <TextBlock
+                                x:Name="XamlPresenter"
+                                Padding="16,0,16,16"
+                                Text="XAML"/>
+                        </ContentPresenter>
+                        <ContentPresenter x:Name="CSharpContentPresenter" Visibility="Collapsed" IsTabStop="False">
+                            <TextBlock
+                                x:Name="CSharpPresenter"
+                                Padding="16,0,16,16"
+                                Text="CSharp" />
+                        </ContentPresenter>
+                    </Grid>
+                </Grid>
+            </Expander>
+        </Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="IntermediateLayout">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="740" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState x:Name="PhoneLayout">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="OptionsPresenter.HorizontalContentAlignment" Value="Left" />
+                        <Setter Target="OptionsPresenter.Margin" Value="0,24,0,0" />
+                        <Setter Target="OptionsPresenter.BorderThickness" Value="0,1,0,0" />
+                        <Setter Target="OptionsPresenter.(Grid.Row)" Value="1" />
+                        <Setter Target="OptionsPresenter.(Grid.Column)" Value="0" />
+                        <Setter Target="OptionsPresenter.(Grid.ColumnSpan)" Value="2" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</Grid>

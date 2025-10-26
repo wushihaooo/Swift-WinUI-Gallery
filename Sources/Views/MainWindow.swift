@@ -137,7 +137,7 @@ class MainWindow: Window {
     private func setupNavigationView() {
         self.navigationView.paneDisplayMode = .left
         self.navigationView.isSettingsVisible = true
-        self.navigationView.openPaneLength = 220
+        self.navigationView.openPaneLength = 320
         self.navigationView.isBackButtonVisible = .collapsed
         self.navigationView.isPaneToggleButtonVisible = false
         

@@ -259,6 +259,10 @@ class MainWindow: Window {
                 rootFrame.content = SelectorBarPage()
             case NavigationViewCategory.tabView:
                 rootFrame.content = TabViewPage()
+            case MenusToolbarsCategory.appBarButton:
+                rootFrame.content = AppBarButtonPage()
+            case MenusToolbarsCategory.appBarSeparator:
+                rootFrame.content = AppBarButtonPage()
             default:
                 break
             }

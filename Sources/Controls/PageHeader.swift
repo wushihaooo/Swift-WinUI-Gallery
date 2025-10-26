@@ -59,7 +59,7 @@ public class PageHeader: UserControl {
     public init(item: ControlInfo) {
         self.item = item
         super.init()
-        _ = try! self.loaded.addHandler { [weak self] _, _ in
+        _ = self.loaded.addHandler { [weak self] _, _ in
             self?.onLoaded()
         }
         buildUI()
@@ -76,19 +76,19 @@ public class PageHeader: UserControl {
         let row2 = RowDefinition()
         row2.height = GridLength(value: 0, gridUnitType: .auto)
         
-        _ = try! headerGrid.rowDefinitions.append(row1)
-        _ = try! headerGrid.rowDefinitions.append(row2)
+        headerGrid.rowDefinitions.append(row1)
+        headerGrid.rowDefinitions.append(row2)
         
         // Row 0: Title and API Details Button
         let titlePanel = createTitlePanel()
         try? Grid.setRow(titlePanel, 0)
-        _ = try! headerGrid.children.append(titlePanel)
+        headerGrid.children.append(titlePanel)
         
         // Row 1: Action Buttons
         let actionGrid = createActionGrid()
         try! Grid.setRow(actionGrid, 1)
         actionGrid.margin = Thickness(left: 0, top: 12, right: 0, bottom: 12)
-        _ = try! headerGrid.children.append(actionGrid)
+        headerGrid.children.append(actionGrid)
 
         // Set as content
         self.content = headerGrid
@@ -107,7 +107,7 @@ public class PageHeader: UserControl {
         titleText.textWrapping = .noWrap
         if let app = Application.current,
         let resources = app.resources,
-        let titleStyle = try? resources.lookup("TitleTextBlockStyle") as? Style {
+        let titleStyle = resources.lookup("TitleTextBlockStyle") as? Style {
             titleText.style = titleStyle
         } else {
             // 如果无法获取样式资源，手动设置样式属性
@@ -116,7 +116,7 @@ public class PageHeader: UserControl {
         }
         // AutomationProperties.setAutomationId(titleText, "PageHeader")
         // AutomationProperties.setHeadingLevel(titleText, .level1)
-        _ = try? panel.children.append(titleText)
+        panel.children.append(titleText)
         
         // API Details Button
         apiDetailsBtn = Button()
@@ -135,7 +135,7 @@ public class PageHeader: UserControl {
         apiDetailsFlyout = createAPIDetailsFlyout()
         apiDetailsBtn.flyout = apiDetailsFlyout
         
-        _ = try? panel.children.append(apiDetailsBtn)
+        panel.children.append(apiDetailsBtn)
         
         return panel
     }
@@ -155,20 +155,20 @@ public class PageHeader: UserControl {
             
             let namespaceLabel = TextBlock()
             namespaceLabel.text = "Namespace"
-            _ = try? namespacePanel.children.append(namespaceLabel)
+            namespacePanel.children.append(namespaceLabel)
             
             let namespaceValue = TextBlock()
             namespaceValue.text = item.apiNamespace
             namespaceValue.fontFamily = FontFamily("Consolas")
             namespaceValue.isTextSelectionEnabled = true
-            _ = try? namespacePanel.children.append(namespaceValue)
+            namespacePanel.children.append(namespaceValue)
             
-            _ = try? apiPanel.children.append(namespacePanel)
+            apiPanel.children.append(namespacePanel)
             
             if !item.baseClasses.isEmpty {
                 let separator = MenuFlyoutSeparator()
                 separator.margin = Thickness(left: -12, top: 0, right: -12, bottom: 0)
-                _ = try? apiPanel.children.append(separator)
+                apiPanel.children.append(separator)
             }
         }
         
@@ -176,7 +176,7 @@ public class PageHeader: UserControl {
         if !item.baseClasses.isEmpty {
             let inheritanceLabel = TextBlock()
             inheritanceLabel.text = "Inheritance"
-            _ = try? apiPanel.children.append(inheritanceLabel)
+            apiPanel.children.append(inheritanceLabel)
             
             // Create items for breadcrumb
             let itemsPanel = StackPanel()
@@ -188,16 +188,16 @@ public class PageHeader: UserControl {
                     let chevron = TextBlock()
                     chevron.text = ">"
                     chevron.margin = Thickness(left: 4, top: 0, right: 4, bottom: 0)
-                    _ = try? itemsPanel.children.append(chevron)
+                    itemsPanel.children.append(chevron)
                 }
                 
                 let textBlock = TextBlock()
                 textBlock.text = className
                 textBlock.fontFamily = FontFamily("Consolas")
-                _ = try? itemsPanel.children.append(textBlock)
+                itemsPanel.children.append(textBlock)
             }
             
-            _ = try? apiPanel.children.append(itemsPanel)
+            apiPanel.children.append(itemsPanel)
         }
         
         flyout.content = apiPanel
@@ -216,14 +216,14 @@ public class PageHeader: UserControl {
         // Documentation Button
         if !item.docs.isEmpty {
             docsButton = createDocumentationButton()
-            _ = try? leftPanel.children.append(docsButton)
+            leftPanel.children.append(docsButton)
         }
         
         // Source Button
         sourceButton = createSourceButton()
-        _ = try? leftPanel.children.append(sourceButton)
+        leftPanel.children.append(sourceButton)
         
-        _ = try? grid.children.append(leftPanel)
+        grid.children.append(leftPanel)
         
         // Right side - Action buttons
         let rightPanel = StackPanel()
@@ -243,16 +243,16 @@ public class PageHeader: UserControl {
         themeIcon.fontSize = 16
         themeButton.content = themeIcon
         
-        _ = try? themeButton.click.addHandler { [weak self] _, _ in
+        themeButton.click.addHandler { [weak self] _, _ in
             self?.onThemeButtonClick()
         }
-        _ = try? rightPanel.children.append(themeButton)
+        rightPanel.children.append(themeButton)
         
         if _themeButtonVisibility == .visible {
             let separator1 = Border()
             separator1.width = 1
             separator1.height = 20
-            _ = try? rightPanel.children.append(separator1)
+            rightPanel.children.append(separator1)
         }
         
         // Copy Link Button
@@ -268,14 +268,14 @@ public class PageHeader: UserControl {
         copyIcon.fontSize = 16
         copyLinkButton.content = copyIcon
         
-        _ = try? copyLinkButton.click.addHandler { [weak self] _, _ in
+        copyLinkButton.click.addHandler { [weak self] _, _ in
             self?.onCopyLinkButtonClick()
         }
         
         // Create Teaching Tip
         copyLinkTeachingTip = createCopyLinkTeachingTip()
         
-        _ = try? rightPanel.children.append(copyLinkButton)
+        rightPanel.children.append(copyLinkButton)
         
         // Feedback Button
         feedbackButton = Button()
@@ -289,15 +289,15 @@ public class PageHeader: UserControl {
         feedbackIcon.fontSize = 16
         feedbackButton.content = feedbackIcon
         
-        _ = try? feedbackButton.click.addHandler { [weak self] _, _ in
+        feedbackButton.click.addHandler { [weak self] _, _ in
             self?.onFeedbackButtonClick()
         }
-        _ = try? rightPanel.children.append(feedbackButton)
+        rightPanel.children.append(feedbackButton)
         
         let separator2 = Border()
         separator2.width = 1
         separator2.height = 20
-        _ = try? rightPanel.children.append(separator2)
+        rightPanel.children.append(separator2)
         
         // Favorite Button
         favoriteButton = ToggleButton()
@@ -310,17 +310,17 @@ public class PageHeader: UserControl {
         favoriteButton.content = favoriteIcon
         
         // Update icon based on checked state
-        _ = try? favoriteButton.checked.addHandler { [weak self] _, _ in
+        favoriteButton.checked.addHandler { [weak self] _, _ in
             self?.updateFavoriteIcon()
         }
-        _ = try? favoriteButton.unchecked.addHandler { [weak self] _, _ in
+        favoriteButton.unchecked.addHandler { [weak self] _, _ in
             self?.updateFavoriteIcon()
         }
         
         updateFavoriteIcon()
-        _ = try? rightPanel.children.append(favoriteButton)
+        rightPanel.children.append(favoriteButton)
         
-        _ = try? grid.children.append(rightPanel)
+        grid.children.append(rightPanel)
         
         return grid
     }
@@ -338,11 +338,11 @@ public class PageHeader: UserControl {
         let icon = FontIcon()
         icon.glyph = "\u{E8A5}"
         icon.fontSize = 16
-        _ = try? contentPanel.children.append(icon)
+        contentPanel.children.append(icon)
         
         let label = TextBlock()
         label.text = "Documentation"
-        _ = try? contentPanel.children.append(label)
+        contentPanel.children.append(label)
         
         button.content = contentPanel
         
@@ -360,7 +360,7 @@ public class PageHeader: UserControl {
             hyperlink.horizontalAlignment = .stretch
             hyperlink.horizontalContentAlignment = .left
             // ToolTipService.setToolTip(hyperlink, doc.uri)
-            _ = try? stackPanel.children.append(hyperlink)
+            stackPanel.children.append(hyperlink)
         }
         
         flyout.content = stackPanel
@@ -383,11 +383,11 @@ public class PageHeader: UserControl {
         let icon = FontIcon()
         icon.glyph = "\u{E943}"
         icon.fontSize = 18
-        _ = try? contentPanel.children.append(icon)
+        contentPanel.children.append(icon)
         
         let label = TextBlock()
         label.text = "Source"
-        _ = try? contentPanel.children.append(label)
+        contentPanel.children.append(label)
         
         button.content = contentPanel
         
@@ -408,7 +408,7 @@ public class PageHeader: UserControl {
         
         let controlLabel = TextBlock()
         controlLabel.text = "Control source code"
-        _ = try? controlHeaderPanel.children.append(controlLabel)
+        controlHeaderPanel.children.append(controlLabel)
         
         let infoBtn = Button()
         infoBtn.padding = Thickness(left: 6, top: 5, right: 6, bottom: 6)
@@ -420,8 +420,8 @@ public class PageHeader: UserControl {
         infoIcon.fontSize = 14
         infoBtn.content = infoIcon
         
-        _ = try? controlHeaderPanel.children.append(infoBtn)
-        _ = try? controlSourcePanel.children.append(controlHeaderPanel)
+        controlHeaderPanel.children.append(infoBtn)
+        controlSourcePanel.children.append(controlHeaderPanel)
         
         let controlLink = HyperlinkButton()
         controlLink.content = item.title
@@ -429,13 +429,13 @@ public class PageHeader: UserControl {
         controlLink.horizontalAlignment = .stretch
         controlLink.horizontalContentAlignment = .left
         controlLink.navigateUri = Uri("https://github.com/microsoft/microsoft-ui-xaml")
-        _ = try? controlSourcePanel.children.append(controlLink)
+        controlSourcePanel.children.append(controlLink)
         
-        _ = try? sourcePanel.children.append(controlSourcePanel)
+        sourcePanel.children.append(controlSourcePanel)
         
         let separator = MenuFlyoutSeparator()
         separator.margin = Thickness(left: -12, top: 0, right: -12, bottom: 0)
-        _ = try? sourcePanel.children.append(separator)
+        sourcePanel.children.append(separator)
         
         // Sample Page Source Panel
         let sampleHeaderPanel = StackPanel()
@@ -445,7 +445,7 @@ public class PageHeader: UserControl {
         
         let sampleLabel = TextBlock()
         sampleLabel.text = "Sample page source code"
-        _ = try? sampleHeaderPanel.children.append(sampleLabel)
+        sampleHeaderPanel.children.append(sampleLabel)
         
         let sampleInfoBtn = Button()
         sampleInfoBtn.padding = Thickness(left: 6, top: 5, right: 6, bottom: 6)
@@ -457,8 +457,8 @@ public class PageHeader: UserControl {
         sampleInfoIcon.fontSize = 14
         sampleInfoBtn.content = sampleInfoIcon
         
-        _ = try? sampleHeaderPanel.children.append(sampleInfoBtn)
-        _ = try? sourcePanel.children.append(sampleHeaderPanel)
+        sampleHeaderPanel.children.append(sampleInfoBtn)
+        sourcePanel.children.append(sampleHeaderPanel)
         
         let xamlLink = HyperlinkButton()
         xamlLink.content = "XAML"
@@ -466,7 +466,7 @@ public class PageHeader: UserControl {
         xamlLink.horizontalAlignment = .stretch
         xamlLink.horizontalContentAlignment = .left
         xamlLink.navigateUri = Uri("https://github.com/microsoft/WinUI-Gallery")
-        _ = try? sourcePanel.children.append(xamlLink)
+        sourcePanel.children.append(xamlLink)
         
         let csharpLink = HyperlinkButton()
         csharpLink.content = "C#"
@@ -474,7 +474,7 @@ public class PageHeader: UserControl {
         csharpLink.horizontalAlignment = .stretch
         csharpLink.horizontalContentAlignment = .left
         csharpLink.navigateUri = Uri("https://github.com/microsoft/WinUI-Gallery")
-        _ = try? sourcePanel.children.append(csharpLink)
+        sourcePanel.children.append(csharpLink)
         
         flyout.content = sourcePanel
         button.flyout = flyout
@@ -492,7 +492,7 @@ public class PageHeader: UserControl {
         tip.preferredPlacement = .bottom
         tip.target = copyLinkButton
         
-        _ = try? tip.actionButtonClick.addHandler { [weak self] _, _ in
+        tip.actionButtonClick.addHandler { [weak self] _, _ in
             self?.onCopyDontShowAgainButtonClick()
         }
         
@@ -535,7 +535,7 @@ public class PageHeader: UserControl {
         let isChecked = favoriteButton.isChecked ?? false
         icon.glyph = isChecked ? "\u{E735}" : "\u{E734}"
         
-        let tooltip = isChecked ? "Remove from favorites" : "Add to favorites"
+        let _ = isChecked ? "Remove from favorites" : "Add to favorites"
         // ToolTipService.setToolTip(favoriteButton, tooltip)
     }
 }

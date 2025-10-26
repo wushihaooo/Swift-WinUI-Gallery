@@ -193,7 +193,7 @@ class ListViewPage: Grid {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         var idx = 0 
-        _ = try! btn1.click.addHandler { (_: Any?, _: RoutedEventArgs?) in
+        btn1.click.addHandler { (_: Any?, _: RoutedEventArgs?) in
             invertedListView.items.append(self.createItemForExample6(
                 alignment: HorizontalAlignment.left, 
                 msgText: "Hello" + String(idx), 
@@ -202,7 +202,7 @@ class ListViewPage: Grid {
         }
         let btn2 = Button()
         btn2.content = "Receive Message"
-       _ = try! btn2.click.addHandler { (_: Any?, _: RoutedEventArgs?) in
+        btn2.click.addHandler { (_: Any?, _: RoutedEventArgs?) in
             invertedListView.items.append(self.createItemForExample6(
                 alignment: HorizontalAlignment.right, 
                 msgText: "Hello" + String(idx), 
@@ -289,7 +289,7 @@ class ListViewPage: Grid {
             let image = Image()
             image.maxHeight = 100
             image.stretch = .fill
-            image.source = try! BitmapImage(Uri(item.imageSource))
+            image.source = BitmapImage(Uri(item.imageSource))
             itemGrid.children.append(image)
             
             // 创建右侧内容StackPanel

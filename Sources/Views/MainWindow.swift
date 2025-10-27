@@ -262,7 +262,7 @@ class MainWindow: Window {
             case MenusToolbarsCategory.appBarButton:
                 rootFrame.content = AppBarButtonPage()
             case MenusToolbarsCategory.appBarSeparator:
-                rootFrame.content = AppBarButtonPage()
+                rootFrame.content = AppBarSeparatorPage()
             default:
                 break
             }

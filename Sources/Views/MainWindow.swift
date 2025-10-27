@@ -241,6 +241,8 @@ class MainWindow: Window {
                 rootFrame.content = GridViewPage()
             case CollectionsCategory.listBox:
                 rootFrame.content = ListBoxPage()
+            case CollectionsCategory.pullToRefresh:
+                rootFrame.content = PullToRefreshPage()
             case ScrollingCategory.annotatedScrollBar:
                 rootFrame.content = AnnotatedScrollBarPage()
             case LayoutCategory.grid:

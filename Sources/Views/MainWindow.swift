@@ -237,6 +237,8 @@ class MainWindow: Window {
                 rootFrame.content = ListViewPage()
             case CollectionsCategory.flipView:
                 rootFrame.content = FlipViewPage()
+            case CollectionsCategory.gridView:
+                rootFrame.content = GridViewPage()
             case ScrollingCategory.annotatedScrollBar:
                 rootFrame.content = AnnotatedScrollBarPage()
             case LayoutCategory.grid:

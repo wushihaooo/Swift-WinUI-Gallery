@@ -19,7 +19,8 @@
         <TextBlock
             x:Name="HeaderTextPresenter"
             Margin="0,12"
-            AutomationProperties.HeadingLevel="Level3"/>
+            AutomationProperties.HeadingLevel="Level3"
+            FontWeight="Bold" />
 
         <RichTextBlock
             x:Name="ErrorTextBlock"
@@ -43,7 +44,8 @@
                 x:Name="ExampleContainer"
                 x:FieldModifier="Public"
                 CornerRadius="8,8,0,0"
-                IsTabStop="False">
+                IsTabStop="False"
+                Background="#202020">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition Height="Auto" />

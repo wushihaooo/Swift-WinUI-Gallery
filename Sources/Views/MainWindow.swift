@@ -251,6 +251,10 @@ class MainWindow: Window {
                 rootFrame.content = PipsPagerPage()
             case ScrollingCategory.scrollView:
                 rootFrame.content = ScrollViewPage()
+            case ScrollingCategory.scrollViewer:
+                rootFrame.content = ScrollViewerPage()
+            case ScrollingCategory.semanticZoom:
+                rootFrame.content = SemanticZoomPage()
             case LayoutCategory.grid:
                 rootFrame.content = GridPage()
             case LayoutCategory.border:

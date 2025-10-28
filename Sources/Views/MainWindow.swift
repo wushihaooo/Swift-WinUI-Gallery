@@ -237,6 +237,10 @@ class MainWindow: Window {
                 rootFrame.content = ListViewPage()
             case ScrollingCategory.annotatedScrollBar:
                 rootFrame.content = AnnotatedScrollBarPage()
+            case ScrollingCategory.pipsPager:
+                rootFrame.content = PipsPagerPage()
+            case ScrollingCategory.scrollView:
+                rootFrame.content = ScrollViewPage()
             case LayoutCategory.grid:
                 rootFrame.content = GridPage()
             case LayoutCategory.border:

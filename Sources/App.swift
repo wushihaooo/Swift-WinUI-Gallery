@@ -12,3 +12,4 @@ class App: SwiftApplication {
         try! window.activate()
     }
 }
+

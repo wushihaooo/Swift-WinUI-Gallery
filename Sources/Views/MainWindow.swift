@@ -281,6 +281,12 @@ class MainWindow: Window {
                 rootFrame.content = AppBarButtonPage()
             case MenusToolbarsCategory.appBarSeparator:
                 rootFrame.content = AppBarSeparatorPage()
+            case MenusToolbarsCategory.appBarToggleButton:
+                rootFrame.content = AppBarToggleButtonPage()
+            case MenusToolbarsCategory.commandBar:
+                rootFrame.content = CommandBarPage()
+            case MenusToolbarsCategory.commandBarFlyout:
+                rootFrame.content = CommandBarFlyoutPage()
             default:
                 break
             }

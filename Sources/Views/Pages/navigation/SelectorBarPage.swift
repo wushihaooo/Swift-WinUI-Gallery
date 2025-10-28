@@ -181,13 +181,13 @@ private void SelectorBar3_SelectionChanged(SelectorBar sender,
         }
 
         selectorBar.selectionChanged.addHandler { sender, _ in
-            guard let senderBar = sender, let selectedItem = senderBar.selectedItem as? SelectorBarItem else {
+            guard let senderBar = sender, let selectedItem = senderBar.selectedItem else {
                 print("[SelectorBar] selectionChanged: senderBar或selectedItem为nil")
                 return
             }
             var currentSelectedIndex = -1
             for i in 0..<senderBar.items.size {
-                if let item = senderBar.items.getAt(i) as? SelectorBarItem, item.text == selectedItem.text {
+                if let item = senderBar.items.getAt(i), item.text == selectedItem.text {
                     currentSelectedIndex = Int(i)
                     break
                 }
@@ -269,13 +269,13 @@ private void SelectorBar3_SelectionChanged(SelectorBar sender,
         }
 
         selectorBar.selectionChanged.addHandler { sender, _ in
-            guard let senderBar = sender, let selectedItem = senderBar.selectedItem as? SelectorBarItem else {
+            guard let senderBar = sender, let selectedItem = senderBar.selectedItem else {
                 print("[SelectorBar] selectionChanged: senderBar或selectedItem为nil")
                 return
             }
             var selectedIndex = -1
             for i in 0..<senderBar.items.size {
-                if let item = senderBar.items.getAt(i) as? SelectorBarItem, item.text == selectedItem.text {
+                if let item = senderBar.items.getAt(i), item.text == selectedItem.text {
                     selectedIndex = Int(i)
                     break
                 }

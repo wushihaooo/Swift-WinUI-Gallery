@@ -1,0 +1,748 @@
+<Page
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Padding="36,36,36,0">
+    <Grid x:Name="rootPanel">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid x:Name="headerGrid"/>
+        <ScrollViewer Padding="36,0,36,0" Grid.Row="1">
+            <StackPanel x:Name="exampleStackPanel" Spacing="8">
+                <!-- Example 1: Basic ListView -->
+                <Grid
+                    Margin="0,0,0,16" 
+                    IsTabStop="False">
+                    <Grid.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.ThemeDictionaries>
+                                <ResourceDictionary x:Key="Light">
+                                    <StaticResource x:Key="ControlExampleDisplayBrush" ResourceKey="SolidBackgroundFillColorBaseBrush" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">0</Thickness>
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="Dark">
+                                    <StaticResource x:Key="ControlExampleDisplayBrush" ResourceKey="SolidBackgroundFillColorBaseBrush" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">0</Thickness>
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="HighContrast">
+                                    <SolidColorBrush x:Key="ControlExampleDisplayBrush" Color="{ThemeResource SystemColorWindowColor}" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">1</Thickness>
+                                </ResourceDictionary>
+                            </ResourceDictionary.ThemeDictionaries>
+
+                            <Thickness x:Key="ControlElementScreenshotModePadding">67</Thickness>
+                        </ResourceDictionary>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        x:Name="HeaderTextPresenter"
+                        Margin="0,12"
+                        AutomationProperties.HeadingLevel="Level3"
+                        Style="{ThemeResource BodyStrongTextBlockStyle}"
+                        Text="Basic ListView with Simple DataTemplate" />
+
+                    <RichTextBlock
+                        x:Name="ErrorTextBlock"
+                        Grid.Row="1"
+                        Margin="0,0,0,12"
+                        IsTextSelectionEnabled="True"
+                        Visibility="Collapsed">
+                        <Paragraph>
+                            This sample requires a later version of Windows to be fully functional.
+                        </Paragraph>
+                    </RichTextBlock>
+
+                    <Grid Grid.Row="2" CornerRadius="8" IsTabStop="False">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid
+                            x:Name="ExampleContainer"
+                            CornerRadius="8,8,0,0"
+                            IsTabStop="False">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" MaxWidth="320" />
+                                <ColumnDefinition Width="Auto" MaxWidth="320" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border
+                                x:Name="ControlPresenter"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                CornerRadius="8,8,0,0"
+                                IsTabStop="False"
+                                Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                Padding="16">
+                                    <StackPanel>
+                                        <TextBlock
+                                            Margin="0,0,0,16"
+                                            Text="This is a basic ListView that has the full source code below. Other samples on this page display only the additional markup needed to customize a simple ListView like this one."
+                                            TextWrapping="Wrap" />
+                                        <ListView
+                                            x:Name="BaseExample"
+                                            Width="350"
+                                            Height="400"
+                                            HorizontalAlignment="Left"
+                                            BorderBrush="{ThemeResource ControlStrongStrokeColorDefaultBrush}"
+                                            BorderThickness="1" />
+                                    </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!--  Sample code display  -->
+                        <Expander
+                            Grid.Row="1"
+                            Padding="0"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                            CornerRadius="0,0,8,8">
+
+                            <Expander.Header>
+                                <TextBlock Text="Source Code" />
+                            </Expander.Header>
+                            <Grid RowSpacing="16" IsTabStop="False">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <SelectorBar
+                                    Margin="4,0,0,0">
+                                    <SelectorBarItem
+                                        Loaded="SelectorBarItem_Loaded"
+                                        Tag="Xaml"
+                                        Text="XAML" />
+                                    <SelectorBarItem
+                                        Loaded="SelectorBarItem_Loaded"
+                                        Tag="CSharp"
+                                        Text="C#" />
+                                </SelectorBar>
+
+                                <!--  using animations:Implicit... with Grid.Row causes Grid.Row to have no effect, Therefore, the Grid.Row is applied in the grid  -->
+                                <Grid Grid.Row="1" IsTabStop="False">
+                                </Grid>
+                            </Grid>
+                        </Expander>
+                    </Grid>
+                </Grid>
+                <!-- Example 2: ListView with Selection Support -->
+                <Grid IsTabStop="False">
+                    <Grid.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.ThemeDictionaries>
+                                <ResourceDictionary x:Key="Light">
+                                    <StaticResource x:Key="ControlExampleDisplayBrush" ResourceKey="SolidBackgroundFillColorBaseBrush" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">0</Thickness>
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="Dark">
+                                    <StaticResource x:Key="ControlExampleDisplayBrush" ResourceKey="SolidBackgroundFillColorBaseBrush" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">0</Thickness>
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="HighContrast">
+                                    <SolidColorBrush x:Key="ControlExampleDisplayBrush" Color="{ThemeResource SystemColorWindowColor}" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">1</Thickness>
+                                </ResourceDictionary>
+                            </ResourceDictionary.ThemeDictionaries>
+
+                            <Thickness x:Key="ControlElementScreenshotModePadding">67</Thickness>
+                        </ResourceDictionary>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,12"
+                        AutomationProperties.HeadingLevel="Level3"
+                        Style="{ThemeResource BodyStrongTextBlockStyle}"
+                        Text="ListView with Selection Support" />
+
+                    <RichTextBlock
+                        Grid.Row="1"
+                        Margin="0,0,0,12"
+                        IsTextSelectionEnabled="True"
+                        Visibility="Collapsed">
+                        <Paragraph>
+                            This sample requires a later version of Windows to be fully functional.
+                        </Paragraph>
+                    </RichTextBlock>
+
+                    <Grid Grid.Row="2" CornerRadius="8" IsTabStop="False">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid
+                            CornerRadius="8,8,0,0"
+                            IsTabStop="False">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" MaxWidth="320" />
+                                <ColumnDefinition Width="Auto" MaxWidth="320" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                CornerRadius="8,8,0,0"
+                                IsTabStop="False"
+                                Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                Padding="16">
+
+                                <StackPanel>
+                                    <RichTextBlock Margin="0,0,0,15" TextWrapping="Wrap">
+                                        <Paragraph>You can enable four different selection modes on the right.</Paragraph>
+                                        <Paragraph>
+                                            <Bold>None</Bold>
+                                            disables selection all together.</Paragraph>
+                                        <Paragraph>
+                                            <Bold>Single</Bold>
+                                            allows for only one item to be selected in the list.</Paragraph>
+                                        <Paragraph>
+                                            <Bold>Multiple</Bold>
+                                            causes checkboxes to appear next to items, so that multiple items can be chosen from the list.</Paragraph>
+                                        <Paragraph>
+                                            <Bold>Extended</Bold>
+                                            allows the user to select multiple items by using Ctrl+Click to select the individual items they want, or Shift+Click to select a range of contiguous items.</Paragraph>
+                                    </RichTextBlock>
+                                    <ListView
+                                        x:Name="Control2"
+                                        Width="400"
+                                        Height="400"
+                                        HorizontalAlignment="Left"
+                                        BorderBrush="{ThemeResource ControlStrongStrokeColorDefaultBrush}"
+                                        BorderThickness="1"/>
+                                </StackPanel>
+                            </Border>
+                            <!--  Output Display  -->
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="0,12,12,12"
+                                Padding="16"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Stretch"
+                            
+                                CornerRadius="8"
+                                Orientation="Vertical"
+                                IsTabStop="False">
+                                <TextBlock Text="Output:" />
+                                <Border x:Name="OutputPresenter" IsTabStop="False" />
+                            </StackPanel>
+
+                            <!--  Options Display  -->
+                            <Border
+                                x:Name="OptionsPresenter"
+                                Grid.Column="2"
+                                Padding="16"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                BorderThickness="1,0,0,0"
+                                IsTabStop="False" />
+                        </Grid>
+
+                        <!--  Sample code display  -->
+                        <Expander
+                            Grid.Row="1"
+                            Padding="0"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                            CornerRadius="0,0,8,8">
+
+                            <Expander.Header>
+                                <TextBlock Text="Source Code" />
+                            </Expander.Header>
+                            <Grid RowSpacing="16" IsTabStop="False">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <SelectorBar
+
+                                    Margin="4,0,0,0">
+                                    <SelectorBarItem
+                                        Loaded="SelectorBarItem_Loaded"
+                                        Tag="Xaml"
+                                        Text="XAML" />
+                                    <SelectorBarItem
+                                        Loaded="SelectorBarItem_Loaded"
+                                        Tag="CSharp"
+                                        Text="C#" />
+                                </SelectorBar>
+
+                                <!--  using animations:Implicit... with Grid.Row causes Grid.Row to have no effect, Therefore, the Grid.Row is applied in the grid  -->
+                                <Grid Grid.Row="1" IsTabStop="False">
+                                </Grid>
+                            </Grid>
+                        </Expander>
+                    </Grid>
+                </Grid>
+                <!-- Example 3: ListView with Selection Support -->
+                <Grid IsTabStop="False">
+                    <Grid.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.ThemeDictionaries>
+                                <ResourceDictionary x:Key="Light">
+                                    <StaticResource x:Key="ControlExampleDisplayBrush" ResourceKey="SolidBackgroundFillColorBaseBrush" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">0</Thickness>
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="Dark">
+                                    <StaticResource x:Key="ControlExampleDisplayBrush" ResourceKey="SolidBackgroundFillColorBaseBrush" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">0</Thickness>
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="HighContrast">
+                                    <SolidColorBrush x:Key="ControlExampleDisplayBrush" Color="{ThemeResource SystemColorWindowColor}" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">1</Thickness>
+                                </ResourceDictionary>
+                            </ResourceDictionary.ThemeDictionaries>
+
+                            <Thickness x:Key="ControlElementScreenshotModePadding">67</Thickness>
+                        </ResourceDictionary>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,12"
+                        AutomationProperties.HeadingLevel="Level3"
+                        Style="{ThemeResource BodyStrongTextBlockStyle}"
+                        Text="ListView with Drag, Drop, and Reordering Support" />
+
+                    <RichTextBlock
+                        Grid.Row="1"
+                        Margin="0,0,0,12"
+                        IsTextSelectionEnabled="True"
+                        Visibility="Collapsed">
+                        <Paragraph>
+                            In these ListView controls, you can drag and drop within a list to reorder items, or drag
+                            and drop between lists to move items
+                        </Paragraph>
+                    </RichTextBlock>
+
+                    <Grid Grid.Row="2" CornerRadius="8" IsTabStop="False">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid
+                            CornerRadius="8,8,0,0"
+                            IsTabStop="False">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" MaxWidth="320" />
+                                <ColumnDefinition Width="Auto" MaxWidth="320" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                CornerRadius="8,8,0,0"
+                                IsTabStop="False"
+                                Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                Padding="16">
+
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="1*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock 
+                                        TextWrapping="Wrap"
+                                        Style="{StaticResource BodyTextBlockStyle}">
+                                        In these ListView controls, you can drag and drop within a list to reorder items, or drag and drop between lists to move items.
+                                    </TextBlock>
+                                    <ListView
+                                        x:Name="DragDropListView"
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Height="400"
+                                        MinWidth="350"
+                                        Margin="12"
+                                        AllowDrop="True"
+                                        BorderThickness="1"
+                                        CanDragItems="True"
+                                        CanReorderItems="True"
+                                        SelectionMode="Single" />
+                                    <ListView
+                                        x:Name="DragDropListView2"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Height="400"
+                                        MinWidth="350"
+                                        AllowDrop="True"
+                                        BorderThickness="1"
+                                        CanDragItems="True"
+                                        CanReorderItems="True"
+                                        Drop="ListView_Drop"
+                                        SelectionMode="Single" />
+                                    
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                        <!--  Sample code display  -->
+                        <Expander
+                            Grid.Row="1"
+                            Padding="0"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                            CornerRadius="0,0,8,8">
+
+                            <Expander.Header>
+                                <TextBlock Text="Source Code" />
+                            </Expander.Header>
+                            <Grid RowSpacing="16" IsTabStop="False">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <SelectorBar
+                                    Margin="4,0,0,0">
+                                    <SelectorBarItem
+                                        Loaded="SelectorBarItem_Loaded"
+                                        Tag="Xaml"
+                                        Text="XAML" />
+                                    <SelectorBarItem
+                                        Loaded="SelectorBarItem_Loaded"
+                                        Tag="CSharp"
+                                        Text="C#" />
+                                </SelectorBar>
+
+                                <!--  using animations:Implicit... with Grid.Row causes Grid.Row to have no effect, Therefore, the Grid.Row is applied in the grid  -->
+                                <Grid Grid.Row="1" IsTabStop="False">
+                                </Grid>
+                            </Grid>
+                        </Expander>
+                    </Grid>
+                </Grid>
+                <!-- Example 4: ListView with Grouped Header -->
+                <Grid IsTabStop="False">
+                    <Grid.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.ThemeDictionaries>
+                                <ResourceDictionary x:Key="Light">
+                                    <StaticResource x:Key="ControlExampleDisplayBrush" ResourceKey="SolidBackgroundFillColorBaseBrush" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">0</Thickness>
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="Dark">
+                                    <StaticResource x:Key="ControlExampleDisplayBrush" ResourceKey="SolidBackgroundFillColorBaseBrush" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">0</Thickness>
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="HighContrast">
+                                    <SolidColorBrush x:Key="ControlExampleDisplayBrush" Color="{ThemeResource SystemColorWindowColor}" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">1</Thickness>
+                                </ResourceDictionary>
+                            </ResourceDictionary.ThemeDictionaries>
+
+                            <Thickness x:Key="ControlElementScreenshotModePadding">67</Thickness>
+                        </ResourceDictionary>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Margin="0,12"
+                        AutomationProperties.HeadingLevel="Level3"
+                        Style="{ThemeResource BodyStrongTextBlockStyle}"
+                        Text="ListView with Grouped Headers" />
+
+                    <RichTextBlock
+                        Grid.Row="1"
+                        Margin="0,0,0,12"
+                        IsTextSelectionEnabled="True"
+                        Visibility="Collapsed">
+                        <Paragraph>
+                            Switch the toggle on the right to enable sticky group headers,which makes the headers stay put at the top of the ListView while scrolling.
+                        </Paragraph>
+                    </RichTextBlock>
+                    <Grid Grid.Row="2" CornerRadius="8" IsTabStop="False">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid
+                            CornerRadius="8,8,0,0"
+                            IsTabStop="False">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" MaxWidth="320" />
+                                <ColumnDefinition Width="Auto" MaxWidth="320" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                CornerRadius="8,8,0,0"
+                                IsTabStop="False"
+                                Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                Padding="16">
+
+                                <StackPanel>
+                                    <TextBlock Margin="0,0,0,15" TextWrapping="Wrap">
+                                        Switch the toggle on the right to enable sticky group headers, which makes the headers stay put at the top of the ListView while scrolling.
+                                    </TextBlock>
+
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                        <!--  Sample code display  -->
+                        <Expander
+                            Grid.Row="1"
+                            Padding="0"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                            CornerRadius="0,0,8,8">
+
+                            <Expander.Header>
+                                <TextBlock Text="Source Code" />
+                            </Expander.Header>
+                            <Grid RowSpacing="16" IsTabStop="False">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <SelectorBar
+                                    Margin="4,0,0,0">
+                                    <SelectorBarItem
+                                        x:Name="SelectorBarXamlItem"
+                                        Loaded="SelectorBarItem_Loaded"
+                                        Tag="Xaml"
+                                        Text="XAML" />
+                                    <SelectorBarItem
+                                        Loaded="SelectorBarItem_Loaded"
+                                        Tag="CSharp"
+                                        Text="C#" />
+                                </SelectorBar>
+
+                                <!--  using animations:Implicit... with Grid.Row causes Grid.Row to have no effect, Therefore, the Grid.Row is applied in the grid  -->
+                                <Grid Grid.Row="1" IsTabStop="False">
+                                </Grid>
+                            </Grid>
+                        </Expander>
+                    </Grid>
+                </Grid>
+
+                <!-- Example 4: ListView with Selection Support -->
+                <Grid IsTabStop="False">
+                    <Grid.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.ThemeDictionaries>
+                                <ResourceDictionary x:Key="Light">
+                                    <StaticResource x:Key="ControlExampleDisplayBrush" ResourceKey="SolidBackgroundFillColorBaseBrush" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">0</Thickness>
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="Dark">
+                                    <StaticResource x:Key="ControlExampleDisplayBrush" ResourceKey="SolidBackgroundFillColorBaseBrush" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">0</Thickness>
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="HighContrast">
+                                    <SolidColorBrush x:Key="ControlExampleDisplayBrush" Color="{ThemeResource SystemColorWindowColor}" />
+                                    <Thickness x:Key="ControlExampleDisplayBorderThickness">1</Thickness>
+                                </ResourceDictionary>
+                            </ResourceDictionary.ThemeDictionaries>
+
+                            <Thickness x:Key="ControlElementScreenshotModePadding">67</Thickness>
+                        </ResourceDictionary>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Margin="0,12"
+                        AutomationProperties.HeadingLevel="Level3"
+                        Style="{ThemeResource BodyStrongTextBlockStyle}"
+                        Text="ListView with Grouped Headers" />
+
+                    <RichTextBlock
+                        Grid.Row="1"
+                        Margin="0,0,0,12"
+                        IsTextSelectionEnabled="True"
+                        Visibility="Collapsed">
+                        <Paragraph>
+                            In these ListView controls, you can drag and drop within a list to reorder items, or drag
+                            and drop between lists to move items
+                        </Paragraph>
+                    </RichTextBlock>
+                    <Grid Grid.Row="2" CornerRadius="8" IsTabStop="False">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid
+                            CornerRadius="8,8,0,0"
+                            IsTabStop="False">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" MaxWidth="320" />
+                                <ColumnDefinition Width="Auto" MaxWidth="320" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                CornerRadius="8,8,0,0"
+                                IsTabStop="False"
+                                Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                Padding="16">
+
+                                
+                            </Border>
+                        </Grid>
+                        <!--  Sample code display  -->
+                        <Expander
+                            Grid.Row="1"
+                            Padding="0"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                            CornerRadius="0,0,8,8">
+
+                            <Expander.Header>
+                                <TextBlock Text="Source Code" />
+                            </Expander.Header>
+                            <Grid RowSpacing="16" IsTabStop="False">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <SelectorBar
+                                    Margin="4,0,0,0">
+                                    <SelectorBarItem
+                                        x:Name="SelectorBarXamlItem"
+                                        Loaded="SelectorBarItem_Loaded"
+                                        Tag="Xaml"
+                                        Text="XAML" />
+                                    <SelectorBarItem
+                                        Loaded="SelectorBarItem_Loaded"
+                                        Tag="CSharp"
+                                        Text="C#" />
+                                </SelectorBar>
+
+                                <!--  using animations:Implicit... with Grid.Row causes Grid.Row to have no effect, Therefore, the Grid.Row is applied in the grid  -->
+                                <Grid Grid.Row="1" IsTabStop="False">
+                                </Grid>
+                            </Grid>
+                        </Expander>
+                    </Grid>
+                </Grid>
+
+                <Grid x:Name="Example6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Margin="0,0,0,15" TextWrapping="Wrap">
+                            This ListView is inverted to grow from the bottom up. It's a good way to display logs or messages, with most recent at the bottom.
+                        </TextBlock>
+                    </StackPanel>
+                    <ListView
+                        x:Name="InvertedListView"
+                        Height="400"
+                        BorderThickness="1"
+                        SelectionMode="None">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <ItemsStackPanel VerticalAlignment="Bottom" ItemsUpdatingScrollMode="KeepLastItemInView" />
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+
+                </Grid>
+                <Grid
+                    x:Name="Example7">
+                    <ListView
+                        x:Name="Control4"
+                        Height="400"
+                        Width="550"
+                        AllowDrop="True"
+                        BorderThickness="1"
+                        CanDrag="True"
+                        CanDragItems="True"
+                        CanReorderItems="True"
+                        HorizontalAlignment="Left">
+                    </ListView>
+                </Grid>
+
+                <Grid
+                    x:Name="Example8">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,15"
+                            Text="This ListView allows users to right click to open a context menu. In this case, the context menu provides the option to delete an entry."
+                            TextWrapping="Wrap" />
+                        <ListView
+                            x:Name="ContextMenuList"
+                            Width="400"
+                            Height="400"
+                            HorizontalAlignment="Left"
+                            BorderThickness="1"
+                            SelectionMode="Single"
+                            ShowsScrollingPlaceholders="True">
+                        </ListView>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

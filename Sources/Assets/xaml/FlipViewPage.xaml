@@ -1,0 +1,56 @@
+<Page
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Padding="36,36,36,0">
+    <Grid x:Name="rootPanel">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <!-- Header -->
+        <Grid x:Name="headerGrid"/>
+        <!-- Body -->
+        <ScrollViewer Padding="36,0,36,0" Grid.Row="1">
+            <StackPanel x:Name="exampleStackPanel" Spacing="8">
+                <Grid 
+                    x:Name="Example1"
+                    Height="Auto"
+                    HorizontalAlignment="Left">
+                    <StackPanel>
+                        <FlipView x:Name="SimpleFlipView" Height="270" MaxWidth="400">
+                        </FlipView>
+                    </StackPanel>
+                </Grid>
+                <Grid 
+                    x:Name="Example2"
+                    Height="Auto"
+                    HorizontalAlignment="Left">
+                    <FlipView
+                        x:Name="bindFlipView"
+                        Height="180"
+                        MaxWidth="400"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                    </FlipView>
+                </Grid>           
+                <Grid 
+                    x:Name="Example3" 
+                    HorizontalAlignment="Left">
+                    <FlipView 
+                        x:Name="VerticalFlipView" 
+                        Height="270" 
+                        MaxWidth="400">
+                        <FlipView.ItemsPanel >
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel Orientation="Vertical"/>
+                            </ItemsPanelTemplate>
+                        </FlipView.ItemsPanel>
+                    </FlipView>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

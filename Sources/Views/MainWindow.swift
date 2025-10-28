@@ -137,7 +137,7 @@ class MainWindow: Window {
     private func setupNavigationView() {
         self.navigationView.paneDisplayMode = .left
         self.navigationView.isSettingsVisible = true
-        self.navigationView.openPaneLength = 220
+        self.navigationView.openPaneLength = 320
         self.navigationView.isBackButtonVisible = .collapsed
         self.navigationView.isPaneToggleButtonVisible = false
         
@@ -235,8 +235,22 @@ class MainWindow: Window {
                 rootFrame.content = AllPage()
             case CollectionsCategory.listView:
                 rootFrame.content = ListViewPage()
+            case CollectionsCategory.flipView:
+                rootFrame.content = FlipViewPage()
+            case CollectionsCategory.gridView:
+                rootFrame.content = GridViewPage()
+            case CollectionsCategory.listBox:
+                rootFrame.content = ListBoxPage()
+            case CollectionsCategory.pullToRefresh:
+                rootFrame.content = PullToRefreshPage()
+            case CollectionsCategory.treeView:
+                rootFrame.content = TreeViewPage()
             case ScrollingCategory.annotatedScrollBar:
                 rootFrame.content = AnnotatedScrollBarPage()
+            case ScrollingCategory.pipsPager:
+                rootFrame.content = PipsPagerPage()
+            case ScrollingCategory.scrollView:
+                rootFrame.content = ScrollViewPage()
             case LayoutCategory.grid:
                 rootFrame.content = GridPage()
             case LayoutCategory.border:
@@ -249,6 +263,20 @@ class MainWindow: Window {
                 rootFrame.content = RadioButtonsPage()
             case LayoutCategory.relativePanel:
                 rootFrame.content = RelativePanelPage()
+            case NavigationViewCategory.breadcrumbBar:
+                rootFrame.content = BreadcrumbBarPage()
+            case NavigationViewCategory.navigationView:
+                rootFrame.content = NavigationViewPage()
+            case NavigationViewCategory.pivot:
+                rootFrame.content = PivotPage()
+            case NavigationViewCategory.selectorBar:
+                rootFrame.content = SelectorBarPage()
+            case NavigationViewCategory.tabView:
+                rootFrame.content = TabViewPage()
+            case MenusToolbarsCategory.appBarButton:
+                rootFrame.content = AppBarButtonPage()
+            case MenusToolbarsCategory.appBarSeparator:
+                rootFrame.content = AppBarSeparatorPage()
             default:
                 break
             }

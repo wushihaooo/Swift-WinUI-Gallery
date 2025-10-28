@@ -97,7 +97,7 @@ open class HomePage: Grid {
         headerPanel.children.append(sdkText)
         
         let titleText = TextBlock()
-        titleText.text = "WinUI 3 Gallery"
+        titleText.text = "Swift WinUI 3 Gallery"
         titleText.fontSize = 40
         headerPanel.children.append(titleText)
         

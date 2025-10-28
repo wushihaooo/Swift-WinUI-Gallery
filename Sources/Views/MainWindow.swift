@@ -17,6 +17,8 @@ class MainWindow: Window {
     private var controlsSearchBox: AutoSuggestBox // 搜索功能
     private var currentPageTextBlock: TextBlock // 动态显示
 
+    private var stack: [any Category] = [any Category]()
+
     // MARK: -Initialization
     override init() {
         // 初始化ViewModel
@@ -122,28 +124,31 @@ class MainWindow: Window {
         try? Grid.setRow(titleBar, 0) // 告诉titleBar它应该在第0行，所以这里是类方法。
     }
 
+    private func setupSubCategories(category: any Category, navigationViewItem: NavigationViewItem) {
+        if category.subCategories.isEmpty { return }
+        for subCategory: any Category in category.subCategories {
+            let subCategoryItem = NavigationViewItem()
+            subCategoryItem.tag = Uri("xca://\(subCategory.rawValue)")
+            subCategoryItem.content = subCategory.text
+            navigationViewItem.menuItems.append(subCategoryItem)
+        }
+    }
+
     private func setupNavigationView() {
         self.navigationView.paneDisplayMode = .left
         self.navigationView.isSettingsVisible = true
-        self.navigationView.openPaneLength = 220
+        self.navigationView.openPaneLength = 320
         self.navigationView.isBackButtonVisible = .collapsed
         self.navigationView.isPaneToggleButtonVisible = false
         
-        Category.allCases.forEach { c in
+        MainCategory.allCases.forEach { c in
             let navigationViewItem = NavigationViewItem()
             navigationViewItem.tag = Uri("xca://\(c.rawValue)")
             let icon = FontIcon()
             icon.glyph = c.glyph
             navigationViewItem.icon = icon
             navigationViewItem.content = c.text
-            if c.rawValue == "collections" {
-                for collection in Fundamentals.allCases {
-                    let collectionItem = NavigationViewItem()
-                    collectionItem.tag = Uri("xca://\(c.rawValue)/\(collection.rawValue)")
-                    collectionItem.content = collection.text
-                    navigationViewItem.menuItems.append(collectionItem)
-                }
-            }
+            setupSubCategories(category: c, navigationViewItem: navigationViewItem)
             navigationView.menuItems.append(navigationViewItem)
         }
         // self.navigationView.header = Category.allCases[0].text
@@ -153,14 +158,59 @@ class MainWindow: Window {
         try? Grid.setRow(self.navigationView, 1)
     }
 
+    // 辅助函数：根据 rawValue 查找任意类型的 Category
+    // 所有 Category 类型的注册表
+    private nonisolated(unsafe) static let categoryTypes: [any (RawRepresentable & Category).Type] = [
+        MainCategory.self,
+        FundamentalsCategory.self,
+        DesignCategory.self,
+        AccessibilityCategory.self,
+        BasicInputCategory.self,
+        CollectionsCategory.self,
+        DataTimeCategory.self,
+        DialogsFlyoutsCategory.self,
+        LayoutCategory.self,
+        MediaCategory.self,
+        MenusToolbarsCategory.self,
+        MotionCategory.self,
+        NavigationViewCategory.self,
+        ScrollingCategory.self,
+        StatusInfoCategory.self,
+        StylesCategory.self,
+        SystemCategory.self,
+        TextCategory.self,
+        WindowingCategory.self
+    ]
+    
+    private func findCategory(byRawValue rawValue: String) -> (any Category)? {
+        // 遍历所有注册的 Category 类型,尝试用 rawValue 初始化
+        for categoryType in Self.categoryTypes {
+            if let category = categoryType.init(rawValue: rawValue) {
+                return category
+            }
+        }
+        return nil
+    }
+
     func bindViewModel() {
         // NavigationView切换View事件
         navigationView.selectionChanged.addHandler { [unowned self] (_, _) in
             guard
                 let item = self.navigationView.selectedItem as? NavigationViewItem,
                 let tag = (item.tag as? Uri)?.host,
-                let category = Category(rawValue: tag) else { return }
+                let category = self.findCategory(byRawValue: tag) else { return }
+            if (!category.canSelect) { return }
+            stack.append(category)
+            self.titleBar.isBackButtonVisible = !stack.isEmpty
             self.viewModel.navigateCommand.execute(parameter: category)
+        }
+        titleBar.backRequested.addHandler { [unowned self] (_, _) in
+            if !stack.isEmpty {
+                _ = stack.popLast()
+                let previousCategory = stack.last ?? MainCategory.home
+                self.viewModel.navigateCommand.execute(parameter: previousCategory)
+            }
+            self.titleBar.isBackButtonVisible = !stack.isEmpty
         }
         if let firstItem = navigationView.menuItems.first {
             navigationView.selectedItem = firstItem
@@ -172,24 +222,63 @@ class MainWindow: Window {
 
         // 初始更新
         handlePropertyChanged("selectedCategory")
-
-        rootFrame.navigated.addHandler { [unowned self] (_, _) in
-            self.titleBar.isBackButtonVisible = self.rootFrame.canGoBack
-        }
     }
 
     private func handlePropertyChanged(_ propertyName: String) {
         switch propertyName {
         case "selectedCategory":
-            let item  = viewModel.selectedCategory
-            // 需要切换页面的内容
+            let item: any Category = viewModel.selectedCategory
             switch item {
-            case .home:
-                self.rootFrame.content = HomePage()
-            case .fundamentals:
-                self.rootFrame.content = FundamentalsPage()
+            case MainCategory.home:
+                rootFrame.content = HomePage()
+            case MainCategory.all:
+                rootFrame.content = AllPage()
+            case CollectionsCategory.listView:
+                rootFrame.content = ListViewPage()
+            case CollectionsCategory.flipView:
+                rootFrame.content = FlipViewPage()
+            case CollectionsCategory.gridView:
+                rootFrame.content = GridViewPage()
+            case CollectionsCategory.listBox:
+                rootFrame.content = ListBoxPage()
+            case CollectionsCategory.pullToRefresh:
+                rootFrame.content = PullToRefreshPage()
+            case CollectionsCategory.treeView:
+                rootFrame.content = TreeViewPage()
+            case ScrollingCategory.annotatedScrollBar:
+                rootFrame.content = AnnotatedScrollBarPage()
+            case ScrollingCategory.pipsPager:
+                rootFrame.content = PipsPagerPage()
+            case ScrollingCategory.scrollView:
+                rootFrame.content = ScrollViewPage()
+            case LayoutCategory.grid:
+                rootFrame.content = GridPage()
+            case LayoutCategory.border:
+                rootFrame.content = BorderPage()
+            case LayoutCategory.canvas:
+                rootFrame.content = CanvasPage()
+            case LayoutCategory.expander:
+                rootFrame.content = ExpanderPage()
+            case LayoutCategory.radioButtons:
+                rootFrame.content = RadioButtonsPage()
+            case LayoutCategory.relativePanel:
+                rootFrame.content = RelativePanelPage()
+            case NavigationViewCategory.breadcrumbBar:
+                rootFrame.content = BreadcrumbBarPage()
+            case NavigationViewCategory.navigationView:
+                rootFrame.content = NavigationViewPage()
+            case NavigationViewCategory.pivot:
+                rootFrame.content = PivotPage()
+            case NavigationViewCategory.selectorBar:
+                rootFrame.content = SelectorBarPage()
+            case NavigationViewCategory.tabView:
+                rootFrame.content = TabViewPage()
+            case MenusToolbarsCategory.appBarButton:
+                rootFrame.content = AppBarButtonPage()
+            case MenusToolbarsCategory.appBarSeparator:
+                rootFrame.content = AppBarSeparatorPage()
             default:
-                self.rootFrame.content = HomePage()
+                break
             }
         default:
             break

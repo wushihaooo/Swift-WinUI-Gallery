@@ -16,7 +16,7 @@ let package = Package(
         .package(url: "https://github.com/rayman-zhao/swift-windowsfoundation", branch: "main"),
         .package(url: "https://github.com/rayman-zhao/swift-uwp", branch: "main"),
         .package(url: "https://github.com/rayman-zhao/swift-windowsappsdk", branch: "main"),
-        .package(url: "https://github.com/rayman-zhao/swift-winui", branch: "main"),
+        .package(url: "https://github.com/wushihaooo/swift-winui", branch: "main"),
     ],
     targets: [
         .executableTarget(
@@ -28,6 +28,7 @@ let package = Package(
                 .product(name: "WinAppSDK", package: "swift-windowsappsdk"),
                 .product(name: "WinUI", package: "swift-winui"),
             ],
+            exclude: ["Sources/Views/Pages/navigation/README.md"],
             resources: [
                 .copy("Assets")
             ],

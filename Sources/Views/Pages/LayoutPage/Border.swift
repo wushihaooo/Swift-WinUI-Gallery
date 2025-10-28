@@ -7,6 +7,8 @@ import WinUI
 class BorderPage: Grid {
     private var titleGrid = Grid()//标题
     private var mainPanel = StackPanel() 
+    private var showBorder = Border()
+    private var slider = Slider()
 
     override init() {
         super.init()
@@ -94,7 +96,7 @@ class BorderPage: Grid {
             bottomRight: 0, 
             bottomLeft: 10
         )
-        let showBorder = Border()
+       
         showBorder.padding = Thickness(left: 10, top: 10, right: 10, bottom: 10)
         showBorder.margin = Thickness(left: 10, top: 10, right: 10, bottom: 10)
         showBorder.borderThickness = Thickness(left: 1, top: 1, right: 1, bottom: 1)
@@ -126,10 +128,12 @@ class BorderPage: Grid {
         sliderText.text = "BorderThickness"
         sliderText.foreground = SolidColorBrush(Colors.black)
         sliderText.fontSize = 16
-        let slider = Slider()
+    
         slider.minimum = 0
         slider.maximum = 10
         slider.value = 5
+
+
 
         rightPanel.children.append(sliderText)
         rightPanel.children.append(slider)

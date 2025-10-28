@@ -243,6 +243,8 @@ class MainWindow: Window {
                 rootFrame.content = ListBoxPage()
             case CollectionsCategory.pullToRefresh:
                 rootFrame.content = PullToRefreshPage()
+            case CollectionsCategory.treeView:
+                rootFrame.content = TreeViewPage()
             case ScrollingCategory.annotatedScrollBar:
                 rootFrame.content = AnnotatedScrollBarPage()
             case LayoutCategory.grid:

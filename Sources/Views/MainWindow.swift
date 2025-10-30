@@ -287,6 +287,12 @@ class MainWindow: Window {
                 rootFrame.content = CommandBarPage()
             case MenusToolbarsCategory.commandBarFlyout:
                 rootFrame.content = CommandBarFlyoutPage()
+            case MediaCategory.image:
+                rootFrame.content = ImagePage()
+            case MediaCategory.personPicture:
+                rootFrame.content = PersonPicturePage()
+            case MediaCategory.webView2:
+                rootFrame.content = WebView2Page()
             default:
                 break
             }

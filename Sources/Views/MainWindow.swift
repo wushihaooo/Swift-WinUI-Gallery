@@ -263,6 +263,12 @@ class MainWindow: Window {
                 rootFrame.content = RadioButtonsPage()
             case LayoutCategory.relativePanel:
                 rootFrame.content = RelativePanelPage()
+            case LayoutCategory.stackPanel:
+                rootFrame.content = StackPanelPage()
+            case LayoutCategory.variableSizedWrapGrid:
+                rootFrame.content = variableGridPage()
+            case LayoutCategory.viewBox:
+                rootFrame.content = ViewBoxPage()
             case NavigationViewCategory.breadcrumbBar:
                 rootFrame.content = BreadcrumbBarPage()
             case NavigationViewCategory.navigationView:

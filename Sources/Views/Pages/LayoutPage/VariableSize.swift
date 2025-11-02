@@ -7,6 +7,7 @@ import WinUI
 class variableGridPage: Grid {
     private var titleGrid = Grid()//标题
     private var mainPanel = StackPanel() 
+    private var wrapGrid: VariableSizedWrapGrid!
 
     override init() {
         super.init()
@@ -60,119 +61,98 @@ class variableGridPage: Grid {
     }
 
     private func setMainPanel() {
-        let descTextBlock = TextBlock()
-        descTextBlock.text = "A VariableSizedWrapGrid control"
-        descTextBlock.fontSize = 16
-        descTextBlock.fontWeight = FontWeights.semiBold    // 半粗体
-        descTextBlock.margin = Thickness(left: 20, top: 10, right: 20, bottom: 10)
-        mainPanel.children.append(descTextBlock)
+        let sectionTitle = TextBlock()
+        sectionTitle.text = "A VariableSizedWrapGrid control."
+        sectionTitle.fontSize = 16
+        sectionTitle.margin = Thickness(left: 20, top: 10, right: 20, bottom: 10)
+        mainPanel.children.append(sectionTitle)
 
-        let showGrid=Grid()
+        // 主布局 Grid
+        let mainGrid = Grid()
+        mainGrid.margin = Thickness(left: 20, top: 0, right: 20, bottom: 20)
         let col1 = ColumnDefinition()
-        col1.width = GridLength(value: 1, gridUnitType: .auto)
-        showGrid.columnDefinitions.append(col1)
-
+        col1.width = GridLength(value: 1, gridUnitType: .star)
+        mainGrid.columnDefinitions.append(col1)
         let col2 = ColumnDefinition()
-        col2.width = GridLength(value:1, gridUnitType: .auto)
-        showGrid.columnDefinitions.append(col2)
-        
-        showGrid.margin=Thickness(left: 20, top: 10, right: 20, bottom: 10)
+        col2.width = GridLength(value: 1, gridUnitType: .auto)
+        mainGrid.columnDefinitions.append(col2)
 
-        //内容展示布局
-        let leftPanel=StackPanel()
-        leftPanel.height = Double(400)
-        leftPanel.width = Double(800)
-        leftPanel.background = SolidColorBrush(Colors.lightGray)
-        leftPanel.borderThickness = Thickness(left: 1, top: 1, right: 1, bottom: 1)
-        leftPanel.borderBrush = SolidColorBrush(Colors.gray)
-        leftPanel.orientation = Orientation.horizontal
-        leftPanel.horizontalAlignment = HorizontalAlignment.left
-        leftPanel.verticalAlignment = VerticalAlignment.top
-        leftPanel.cornerRadius = CornerRadius(
-            topLeft: 10, 
-            topRight: 0, 
-            bottomRight: 0, 
-            bottomLeft: 10
-        )
+        wrapGrid = VariableSizedWrapGrid()
+        wrapGrid.itemWidth = 44  // 调整单个元素宽度，让布局更紧凑
+        wrapGrid.itemHeight = 44 // 调整单个元素高度
+        wrapGrid.maximumRowsOrColumns = 3 
+        wrapGrid.orientation = .vertical // 垂直排列（先按行排，满行后换行）
 
-        // let wrapGrid = VariableSizedWrapGrid()
-        // wrapGrid.width = 200
-        // wrapGrid.height = 200
-        // wrapGrid.orientation = .vertical // 垂直方向布局（也可设为 Horizontal）
-        // wrapGrid.itemWidth = 80
-        // wrapGrid.itemHeight = 80
+        try?Grid.setColumn(wrapGrid, 0)
+        wrapGrid.margin = Thickness(left: 10, top: 10, right: 10, bottom: 10)
 
+        // 红色方块（占1行1列）
+        let redRect = Rectangle()
+        redRect.fill = SolidColorBrush(Colors.red)
+        redRect.width = 44
+        redRect.height = 44
+        wrapGrid.children.append(redRect)
 
-        // // 创建四个色块元素
-        // let redRect = Rectangle()
-        // redRect.fill = SolidColorBrush(Colors.red)
+         // 蓝色方块（占2行1列）
+        let blueRect = Rectangle()
+        blueRect.fill = SolidColorBrush(Colors.blue)
+        blueRect.height = 80
+        try?VariableSizedWrapGrid.setRowSpan(blueRect, 2) // 跨2行
 
-        // let greenRect = Rectangle()
-        // greenRect.fill = SolidColorBrush(Colors.green)
-        // // 绿色块跨 2 列
-        // try? VariableSizedWrapGrid.setColumnSpan(greenRect, 2)
+        wrapGrid.children.append(blueRect)
 
-        // let blueRect = Rectangle()
-        // blueRect.fill = SolidColorBrush(Colors.blue)
-        // // 蓝色块跨 2 行
-        // try? VariableSizedWrapGrid.setRowSpan(blueRect, 2)
-
-        // let yellowRect = Rectangle()
-        // yellowRect.fill = SolidColorBrush(Colors.yellow)
-        // // 黄色块跨 2 行 2 列
-        // try? VariableSizedWrapGrid.setRowSpan(yellowRect, 2)
-        // try? VariableSizedWrapGrid.setColumnSpan(yellowRect, 2)
+        // 绿色方块
+        let greenRect = Rectangle()
+        greenRect.fill = SolidColorBrush(Colors.green)
+        greenRect.width = 80
+        try?VariableSizedWrapGrid.setColumnSpan(greenRect, 2) // 跨2列
+        wrapGrid.children.append(greenRect)
 
 
-        // // 将元素添加到布局
-        // wrapGrid.children.append(redRect)
-        // wrapGrid.children.append(greenRect)
-        // wrapGrid.children.append(blueRect)
-        // wrapGrid.children.append(yellowRect)
+        // 黄色方块（占2行1列）
+        let yellowRect = Rectangle()
+        yellowRect.fill = SolidColorBrush(Colors.yellow)
+        yellowRect.height = 80
+        yellowRect.width = 80
+        try?VariableSizedWrapGrid.setRowSpan(yellowRect, 2) // 跨2行
+        try?VariableSizedWrapGrid.setColumnSpan(yellowRect, 2) // 跨2列
+        wrapGrid.children.append(yellowRect)
 
-        // leftPanel.children.append(wrapGrid)
+        mainGrid.children.append(wrapGrid)
 
-        let rightPanel = StackPanel()//右边容器布局
-        rightPanel.height = Double(400)
-        rightPanel.background = SolidColorBrush(Colors.white)
-        rightPanel.borderThickness = Thickness(left: 0, top: 1, right: 1, bottom: 1)
-        rightPanel.borderBrush = SolidColorBrush(Colors.gray)
-        rightPanel.cornerRadius = CornerRadius(
-            topLeft: 0, 
-            topRight: 10, 
-            bottomRight: 10, 
-            bottomLeft: 0
-        )
-        rightPanel.padding = Thickness(left: 10, top: 10, right: 10, bottom: 10)
-        rightPanel.orientation = Orientation.vertical
-        rightPanel.horizontalAlignment = HorizontalAlignment.center
+        // 右侧方向选择面板
+        let rightPanel = StackPanel()
+        rightPanel.verticalAlignment = .top
+        try?Grid.setColumn(rightPanel, 1)
 
-        let leftTextBlock = TextBlock()
-        leftTextBlock.text = "Orientation"
-        leftTextBlock.fontSize = 20
-        let HradioButton = RadioButton()
-        let htextBlock = TextBlock()
-        htextBlock.text = "Horizontal"
-        htextBlock.fontSize = 16
-        HradioButton.content = htextBlock
-        HradioButton.isChecked = true
-        let VradioButton = RadioButton()
-        let vtextBlock = TextBlock()
-        vtextBlock.text = "Vertical"
-        vtextBlock.fontSize = 16
-        VradioButton.content = vtextBlock
+        let orientationLabel = TextBlock()
+        orientationLabel.text = "Orientation"
+        orientationLabel.fontSize = 16
+        rightPanel.children.append(orientationLabel)
 
-        rightPanel.children.append(leftTextBlock)
-        rightPanel.children.append(HradioButton)
-        rightPanel.children.append(VradioButton)
-       
+        // 水平方向单选按钮
+        let horizontalRadio = RadioButton()
+        horizontalRadio.content = "Horizontal"
+        horizontalRadio.isChecked = false
+        horizontalRadio.checked.addHandler { [weak self] sender, args in
+            guard let self = self, let radio = sender as? RadioButton, radio.isChecked == true else { return }
+            self.wrapGrid.orientation = .horizontal
+        }
+        rightPanel.children.append(horizontalRadio)
 
-        showGrid.children.append(rightPanel)
-        try? Grid.setColumn(rightPanel, 1)
-        showGrid.children.append(leftPanel)
-        try? Grid.setColumn(leftPanel, 0)
+        // 垂直方向单选按钮（默认选中）
+        let verticalRadio = RadioButton()
+        verticalRadio.content = "Vertical"
+        verticalRadio.isChecked = true
+        verticalRadio.checked.addHandler { [weak self] sender, args in
+            guard let self = self, let radio = sender as? RadioButton, radio.isChecked == true else { return }
+            self.wrapGrid.orientation = .vertical
+        }
+        rightPanel.children.append(verticalRadio)
 
-        mainPanel.children.append(showGrid)
+        mainGrid.children.append(rightPanel)
+
+        mainPanel.children.append(mainGrid)
 
     }
    

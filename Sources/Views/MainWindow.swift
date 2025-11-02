@@ -251,6 +251,10 @@ class MainWindow: Window {
                 rootFrame.content = PipsPagerPage()
             case ScrollingCategory.scrollView:
                 rootFrame.content = ScrollViewPage()
+            case ScrollingCategory.scrollViewer:
+                rootFrame.content = ScrollViewerPage()
+            case ScrollingCategory.semanticZoom:
+                rootFrame.content = SemanticZoomPage()
             case LayoutCategory.grid:
                 rootFrame.content = GridPage()
             case LayoutCategory.border:
@@ -283,6 +287,18 @@ class MainWindow: Window {
                 rootFrame.content = AppBarButtonPage()
             case MenusToolbarsCategory.appBarSeparator:
                 rootFrame.content = AppBarSeparatorPage()
+            case MenusToolbarsCategory.appBarToggleButton:
+                rootFrame.content = AppBarToggleButtonPage()
+            case MenusToolbarsCategory.commandBar:
+                rootFrame.content = CommandBarPage()
+            case MenusToolbarsCategory.commandBarFlyout:
+                rootFrame.content = CommandBarFlyoutPage()
+            case MediaCategory.image:
+                rootFrame.content = ImagePage()
+            case MediaCategory.personPicture:
+                rootFrame.content = PersonPicturePage()
+            case MediaCategory.webView2:
+                rootFrame.content = WebView2Page()
             default:
                 break
             }

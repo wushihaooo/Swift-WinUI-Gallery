@@ -91,7 +91,7 @@ open class HomePage: Grid {
         headerPanel.spacing = 8
         
         let sdkText = TextBlock()
-        sdkText.text = "Windows App SDK 1.8"
+        sdkText.text = "Windows App SDK \(ReleaseInfo.asString)"
         sdkText.fontSize = 14
         sdkText.opacity = 0.6
         headerPanel.children.append(sdkText)

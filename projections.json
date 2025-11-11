@@ -132,7 +132,9 @@
     "Microsoft.UI.Xaml.Controls.BreadcrumbBar",
     "Microsoft.UI.Xaml.Controls.BreadcrumbBarItem",
     "Microsoft.UI.Xaml.Controls.BreadcrumbBarItemClickedEventArgs",
-    "Microsoft.UI.Xaml.Controls.ItemsSourceView"
+    "Microsoft.UI.Xaml.Controls.ItemsSourceView",
+    "Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid",
+    "Microsoft.UI.Xaml.Controls.Viewbox"
   ],
   "exclude": [
   ]

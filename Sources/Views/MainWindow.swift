@@ -176,7 +176,7 @@ class MainWindow: Window {
     }
 
     private func setupNavigationView() {
-        self.navigationView.paneDisplayMode = .left
+        self.navigationView.paneDisplayMode = .auto
         self.navigationView.isSettingsVisible = true
         self.navigationView.openPaneLength = 320
         self.navigationView.isBackButtonVisible = .collapsed
@@ -233,17 +233,26 @@ class MainWindow: Window {
         return nil
     }
 
+    private func navigate() {
+        guard
+            let item = self.navigationView.selectedItem as? NavigationViewItem,
+            let tag = (item.tag as? Uri)?.host,
+            let category = self.findCategory(byRawValue: tag) else { return }
+        if (!category.canSelect) { return }
+        stack.append(category)
+        self.titleBar.isBackButtonVisible = !stack.isEmpty
+        self.viewModel.navigateCommand.execute(parameter: category)
+    }
+
     func bindViewModel() {
         // NavigationView切换View事件
-        navigationView.selectionChanged.addHandler { [unowned self] (_, _) in
-            guard
-                let item = self.navigationView.selectedItem as? NavigationViewItem,
-                let tag = (item.tag as? Uri)?.host,
-                let category = self.findCategory(byRawValue: tag) else { return }
-            if (!category.canSelect) { return }
-            stack.append(category)
-            self.titleBar.isBackButtonVisible = !stack.isEmpty
-            self.viewModel.navigateCommand.execute(parameter: category)
+        navigationView.selectionChanged.addHandler { [unowned self] (_, args) in
+            if (args?.isSettingsSelected == true) {
+                rootFrame.content = SettingsPage()
+                return
+            } else {
+                self.navigate()
+            }
         }
         titleBar.backRequested.addHandler { [unowned self] (_, _) in
             if !stack.isEmpty {

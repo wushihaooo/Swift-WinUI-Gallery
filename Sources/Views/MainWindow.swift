@@ -299,6 +299,14 @@ class MainWindow: Window {
                 rootFrame.content = PersonPicturePage()
             case MediaCategory.webView2:
                 rootFrame.content = WebView2Page()
+            case DialogsFlyoutsCategory.contentDialog:
+                rootFrame.content = ContentDialogPage()
+            case DialogsFlyoutsCategory.flyout:
+                rootFrame.content = FlyoutPage()
+            case DialogsFlyoutsCategory.popup:
+                rootFrame.content = PopupPage()
+            case DialogsFlyoutsCategory.teachingTip:
+                rootFrame.content = TeachingTipPage()
             default:
                 break
             }

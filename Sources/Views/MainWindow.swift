@@ -87,12 +87,11 @@ class MainWindow: Window {
     }
 
     private func setupTitleBar() {
-        // TitleBar
         titleBar.name = "TitleBar"
         titleBar.title = "Swift WinUI 3 Gallery"
         titleBar.isBackButtonVisible = self.rootFrame.canGoBack
         titleBar.isPaneToggleButtonVisible = true
-        // 添加Back按钮和Pane Toggle按钮的事件处理
+
         titleBar.backRequested.addHandler { [weak self] (_, _) in
             guard let self = self else { return }
             if self.rootFrame.canGoBack {
@@ -101,28 +100,70 @@ class MainWindow: Window {
         }
         titleBar.paneToggleRequested.addHandler { [weak self] (_, _) in
             guard let self = self else { return }
-            self.navigationView.isPaneOpen = !self.navigationView.isPaneOpen
+            self.navigationView.isPaneOpen.toggle()
         }
-        titleBar.leftHeader = self.createImage(
-            height: 16, 
-            width: 16, 
+
+        let appIcon = self.createImage(
+            height: 16,
+            width: 16,
             imagePath: Bundle.module.path(
-                forResource: "GalleryIcon", 
-                ofType: "ico", 
+                forResource: "GalleryIcon",
+                ofType: "ico",
                 inDirectory: "Assets/Tiles"
-            )!, 
+            )!,
             imageThickness: [0, 0, 8, 0]
         )
 
+        let titleText = TextBlock()
+        titleText.text = "Swift WinUI 3 Gallery"
+        titleText.fontSize = 14
+        titleText.verticalAlignment = .center
+
+        let subtitleText = TextBlock()
+        subtitleText.text = "Preview"
+        subtitleText.fontSize = 12
+        subtitleText.opacity = 0.75
+        subtitleText.verticalAlignment = .center
+        subtitleText.margin = Thickness(left: 6, top: 0, right: 0, bottom: 0)
+
+        let leftStack = StackPanel()
+        leftStack.orientation = .horizontal
+        leftStack.spacing = 0
+        leftStack.verticalAlignment = .center
+        leftStack.children.append(appIcon)
+        leftStack.children.append(titleText)
+        leftStack.children.append(subtitleText)
+
+        titleBar.leftHeader = leftStack
+
         self.controlsSearchBox.name = "controlsSearchBox"
-        self.controlsSearchBox.horizontalAlignment = .stretch
         self.controlsSearchBox.placeholderText = "Search controls and samples..."
         self.controlsSearchBox.verticalAlignment = .center
-        self.titleBar.content = self.controlsSearchBox
+        self.controlsSearchBox.horizontalAlignment = .center
+        self.controlsSearchBox.minWidth = 380 
+        self.controlsSearchBox.margin = Thickness(left: 12, top: 0, right: 12, bottom: 0)
+
+        titleBar.content = self.controlsSearchBox
+
+        let avatar = Border()
+        avatar.width = 32
+        avatar.height = 32
+        avatar.cornerRadius = CornerRadius(topLeft: 16, topRight: 16, bottomRight: 16, bottomLeft: 16)
+        avatar.verticalAlignment = .center
+        avatar.background = SolidColorBrush(Color(a: 255, r: 240, g: 240, b: 240))
+
+        let avatarText = TextBlock()
+        avatarText.text = "PP"
+        avatarText.verticalAlignment = .center
+        avatarText.horizontalAlignment = .center
+        avatarText.fontSize = 12
+        avatar.child = avatarText
+        titleBar.rightHeader = avatar
 
         self.rootGrid.children.append(titleBar)
-        try? Grid.setRow(titleBar, 0) // 告诉titleBar它应该在第0行，所以这里是类方法。
+        try? Grid.setRow(titleBar, 0)
     }
+
 
     private func setupSubCategories(category: any Category, navigationViewItem: NavigationViewItem) {
         if category.subCategories.isEmpty { return }
@@ -299,14 +340,8 @@ class MainWindow: Window {
                 rootFrame.content = PersonPicturePage()
             case MediaCategory.webView2:
                 rootFrame.content = WebView2Page()
-            case DialogsFlyoutsCategory.contentDialog:
-                rootFrame.content = ContentDialogPage()
-            case DialogsFlyoutsCategory.flyout:
-                rootFrame.content = FlyoutPage()
-            case DialogsFlyoutsCategory.popup:
-                rootFrame.content = PopupPage()
-            case DialogsFlyoutsCategory.teachingTip:
-                rootFrame.content = TeachingTipPage()
+            case WindowingCategory.titleBar:
+                rootFrame.content = TitlebarPage()
             default:
                 break
             }

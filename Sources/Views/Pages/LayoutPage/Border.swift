@@ -7,6 +7,8 @@ import WinUI
 class BorderPage: Grid {
     private var titleGrid = Grid()//标题
     private var mainPanel = StackPanel() 
+    private var showBorder = Border()
+    private var slider = Slider()
 
     override init() {
         super.init()
@@ -94,7 +96,7 @@ class BorderPage: Grid {
             bottomRight: 0, 
             bottomLeft: 10
         )
-        let showBorder = Border()
+       
         showBorder.padding = Thickness(left: 10, top: 10, right: 10, bottom: 10)
         showBorder.margin = Thickness(left: 10, top: 10, right: 10, bottom: 10)
         showBorder.borderThickness = Thickness(left: 1, top: 1, right: 1, bottom: 1)
@@ -126,10 +128,26 @@ class BorderPage: Grid {
         sliderText.text = "BorderThickness"
         sliderText.foreground = SolidColorBrush(Colors.black)
         sliderText.fontSize = 16
-        let slider = Slider()
+    
         slider.minimum = 0
         slider.maximum = 10
         slider.value = 5
+
+        // 添加滑块值变化事件
+        slider.valueChanged.addHandler { [weak self] sender, args in
+            guard let self = self, let args = args else { return }
+            // 获取滑块当前值（边框厚度）
+            let thicknessValue = args.newValue
+            // 更新 border 的边框厚度（四个方向都使用该值）
+            self.showBorder.borderThickness = Thickness(
+                left: thicknessValue,
+                top: thicknessValue,
+                right: thicknessValue,
+                bottom: thicknessValue
+            )
+        }
+
+
 
         rightPanel.children.append(sliderText)
         rightPanel.children.append(slider)
@@ -151,24 +169,36 @@ class BorderPage: Grid {
         radioGreenText.foreground = SolidColorBrush(Colors.black)  // 设置文本颜色为黑色
         radioGreen.content = radioGreenText  // 将 TextBlock 作为 content 赋值
         radioGreen.isChecked = true // 默认选中
+        radioGreen.checked.addHandler { [weak self] sender, args in
+            self?.showBorder.background = SolidColorBrush(Colors.green)
+        }
         // 第二个单选按钮
         let radioYellow = RadioButton()
         let radioYellowText = TextBlock()
         radioYellowText.text = "Yellow"
         radioYellowText.foreground = SolidColorBrush(Colors.black)
         radioYellow.content = radioYellowText
+        radioYellow.checked.addHandler { [weak self] sender, args in
+            self?.showBorder.background = SolidColorBrush(Colors.yellow)
+        }
         // 第三个单选按钮
         let radioBlue = RadioButton()
         let radioBlueText = TextBlock()
         radioBlueText.text = "Blue"
         radioBlueText.foreground = SolidColorBrush(Colors.black)
         radioBlue.content = radioBlueText
+        radioBlue.checked.addHandler { [weak self] sender, args in
+            self?.showBorder.background = SolidColorBrush(Colors.blue)
+        }
         // 第四个单选按钮
         let radioWhite = RadioButton()
         let radioWhiteText = TextBlock()
         radioWhiteText.text = "White"
         radioWhiteText.foreground = SolidColorBrush(Colors.black)
         radioWhite.content = radioWhiteText
+        radioWhite.checked.addHandler { [weak self] sender, args in
+            self?.showBorder.background = SolidColorBrush(Colors.white)
+        }
 
         // 将单选按钮添加到容器
         Background.children.append(backgroundText)
@@ -189,24 +219,36 @@ class BorderPage: Grid {
         borderGreenText.foreground = SolidColorBrush(Colors.black)  // 设置文本颜色为黑色
         borderGreen.content = borderGreenText  // 将 TextBlock 作为 content 赋值
         borderGreen.isChecked = true // 默认选中
+        borderGreen.checked.addHandler { [weak self] sender, args in
+            self?.showBorder.borderBrush = SolidColorBrush(Colors.green)
+        }
         // 第二个单选按钮
         let borderYellow = RadioButton()
         let borderYellowText = TextBlock()
         borderYellowText.text = "Yellow"
         borderYellowText.foreground = SolidColorBrush(Colors.black)
         borderYellow.content = borderYellowText
+        borderYellow.checked.addHandler { [weak self] sender, args in
+            self?.showBorder.borderBrush = SolidColorBrush(Colors.yellow)
+        }
         // 第三个单选按钮
         let borderBlue = RadioButton()
         let borderBlueText = TextBlock()
         borderBlueText.text = "Blue"
         borderBlueText.foreground = SolidColorBrush(Colors.black)
         borderBlue.content = borderBlueText
+        borderBlue.checked.addHandler { [weak self] sender, args in
+            self?.showBorder.borderBrush = SolidColorBrush(Colors.blue)
+        }
         // 第四个单选按钮
         let borderWhite = RadioButton()
         let borderWhiteText = TextBlock()
         borderWhiteText.text = "White"
         borderWhiteText.foreground = SolidColorBrush(Colors.black)
         borderWhite.content = borderWhiteText
+        borderWhite.checked.addHandler { [weak self] sender, args in
+            self?.showBorder.borderBrush = SolidColorBrush(Colors.white)
+        }
         // 将单选按钮添加到容器
         Border.children.append(borderText)
         Border.children.append(borderGreen)

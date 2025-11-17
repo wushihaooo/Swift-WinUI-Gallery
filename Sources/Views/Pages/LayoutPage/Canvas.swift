@@ -7,6 +7,7 @@ import WinUI
 class CanvasPage: Grid {
     private var titleGrid = Grid()//标题
     private var mainPanel = StackPanel() 
+    private var rect1: Rectangle!  // 后续在 setMainPanel 中初始化
 
     override init() {
         super.init()
@@ -101,7 +102,7 @@ class CanvasPage: Grid {
         canvas.background = SolidColorBrush(Colors.white) 
         canvas.margin=Thickness(left: 20, top: 10, right: 20, bottom: 10)
         
-        let rect1 = Rectangle()
+        rect1 = Rectangle()
         rect1.width = 100  // 宽 = 高，确保是正方形
         rect1.height = 100
         rect1.fill = SolidColorBrush(Colors.red)  // 填充色
@@ -174,6 +175,10 @@ class CanvasPage: Grid {
         topSlider.maximum = 250 
         topSlider.isDirectionReversed = true  // 默认是 false，设置为 true 即可反转
         topSlider.requestedTheme=ElementTheme.light  // 设置为浅色主题
+        topSlider.valueChanged.addHandler { [weak self] sender, args in
+            guard let self = self, let args = args else { return }
+            try! Canvas.setTop(self.rect1, args.newValue)
+        }
 
         topGroup.children.append(topLabel)
         topGroup.children.append(topSlider)
@@ -197,6 +202,10 @@ class CanvasPage: Grid {
         leftSlider.minimum = 0
         leftSlider.maximum = 250
         leftSlider.requestedTheme=ElementTheme.light  // 设置为浅色主题
+        leftSlider.valueChanged.addHandler { [weak self] sender, args in
+            guard let self = self, let args = args, let rect = self.rect1 else { return }
+            try? Canvas.setLeft(rect, args.newValue)
+        }
 
         leftSubGroup.children.append(leftLabel)
         leftSubGroup.children.append(leftSlider)
@@ -216,7 +225,11 @@ class CanvasPage: Grid {
         zIndexSlider.minimum = 0
         zIndexSlider.maximum = 10  // ZIndex 范围通常较小
         zIndexSlider.requestedTheme=ElementTheme.light  // 设置为浅色主题
-
+        // 绑定事件：更新 rect1 的层级（数值越大，层级越高，显示在越上层）
+        zIndexSlider.valueChanged.addHandler { [weak self] sender, args in
+            guard let self = self, let args = args, let rect = self.rect1 else { return }
+            try? Canvas.setZIndex(rect, Int32(args.newValue))
+        }
         zIndexSubGroup.children.append(zIndexLabel)
         zIndexSubGroup.children.append(zIndexSlider)
 

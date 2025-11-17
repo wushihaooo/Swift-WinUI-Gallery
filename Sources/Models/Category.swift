@@ -156,7 +156,7 @@ enum DialogsFlyoutsCategory: String, Category {
 }
 
 enum LayoutCategory: String, Category {
-    case border, canvas, expander, grid, radioButtons, relativePanel, variableSizedWrapGrid, viewBox
+    case border, canvas, expander, grid, radioButtons, relativePanel, variableSizedWrapGrid, viewBox,stackPanel
 }
 
 enum MediaCategory: String, Category {

@@ -7,6 +7,8 @@ import WinUI
 class GridPage: Grid {
     private var titleGrid = Grid()//标题
     private var mainPanel = StackPanel() 
+    private var grid: Grid!  // 3*3 Grid 容器
+    private var rect1: Rectangle!  // 红色矩形（需控制位置）
 
     override init() {
         super.init()
@@ -63,23 +65,23 @@ class GridPage: Grid {
         let descTextBlock = TextBlock()
         descTextBlock.text = "A 3*3 Grid control"
         descTextBlock.fontSize = 16
-        descTextBlock.fontWeight = FontWeights.semiBold    // 半粗体
+        descTextBlock.fontWeight = FontWeights.semiBold
         descTextBlock.margin = Thickness(left: 20, top: 10, right: 20, bottom: 10)
         mainPanel.children.append(descTextBlock)
 
-        let showGrid=Grid()
+        let showGrid = Grid()
         let col1 = ColumnDefinition()
         col1.width = GridLength(value: 1, gridUnitType: .auto)
         showGrid.columnDefinitions.append(col1)
 
         let col2 = ColumnDefinition()
-        col2.width = GridLength(value:1, gridUnitType: .auto)
+        col2.width = GridLength(value: 1, gridUnitType: .auto)
         showGrid.columnDefinitions.append(col2)
         
-        showGrid.margin=Thickness(left: 20, top: 10, right: 20, bottom: 10)
+        showGrid.margin = Thickness(left: 20, top: 10, right: 20, bottom: 10)
 
-        //内容展示布局
-        let leftPanel=StackPanel()
+        // 内容展示布局
+        let leftPanel = StackPanel()
         leftPanel.height = Double(400)
         leftPanel.width = Double(800)
         leftPanel.background = SolidColorBrush(Colors.lightGray)
@@ -95,69 +97,78 @@ class GridPage: Grid {
             bottomLeft: 10
         )
 
-        let grid = Grid()
-        grid.width = 350 
-        grid.height = 350  
+        // 初始化 Grid 容器（类属性）
+        grid = Grid()
         grid.background = SolidColorBrush(Colors.white) 
-        grid.margin=Thickness(left: 20, top: 10, right: 20, bottom: 10)
+        grid.width = Double(500)
+        grid.height = Double(400)
+        grid.margin = Thickness(left: 20, top: 10, right: 20, bottom: 10)
+       
         
+        // 添加 3 行（等比例分配）
         for _ in 0..<3 {
             let row = RowDefinition()
-            row.height = GridLength(value: 1, gridUnitType: .star)  // 1* 比例分配高度
+            row.height = GridLength(value: 1, gridUnitType: .star)
             grid.rowDefinitions.append(row)
         }
 
-        // 2. 设置三列（列宽同样等比例分配）
+        // 添加 3 列（等比例分配）
         for _ in 0..<3 {
             let col = ColumnDefinition()
-            col.width = GridLength(value: 1, gridUnitType: .star)  // 1* 比例分配宽度
+            col.width = GridLength(value: 1, gridUnitType: .star)
             grid.columnDefinitions.append(col)
         }
 
-        let rect1 = Rectangle()
-        rect1.horizontalAlignment = .stretch
-        rect1.verticalAlignment = .stretch
-        rect1.fill = SolidColorBrush(Colors.red)  // 填充色
-        try?Grid.setRow(rect1, 0)        // 放在第 0 行（首行）
-        try?Grid.setColumn(rect1, 0)
+        // 初始化红色矩形（类属性）
+        rect1 = Rectangle()
+        rect1.width = 80
+        rect1.height = 80
+        rect1.horizontalAlignment = .center
+        rect1.verticalAlignment = .center
+        rect1.fill = SolidColorBrush(Colors.red)
+        try? Grid.setRow(rect1, 0)  // 初始行：0
+        try? Grid.setColumn(rect1, 0)  // 初始列：0
         rect1.margin = Thickness(left: 10, top: 10, right: 10, bottom: 10)
         grid.children.append(rect1)
-        
 
+        // 其他矩形（保持不变）
         let rect2 = Rectangle()
-        rect2.horizontalAlignment = .stretch
-        rect2.verticalAlignment = .stretch
-        rect2.fill = SolidColorBrush(Colors.blue)  // 填充色
-        try?Grid.setRow(rect2, 0)        // 放在第 0 行（首行）
-        try?Grid.setColumn(rect2, 1)
+        rect2.width = 80
+        rect2.height = 80
+        rect2.horizontalAlignment = .center
+        rect2.verticalAlignment = .center
+        rect2.fill = SolidColorBrush(Colors.blue)
+        try? Grid.setRow(rect2, 0)
+        try? Grid.setColumn(rect2, 1)
         rect2.margin = Thickness(left: 10, top: 10, right: 10, bottom: 10)
-
         grid.children.append(rect2)
 
-       
-
         let rect3 = Rectangle()
-        rect3.horizontalAlignment = .stretch
-        rect3.verticalAlignment = .stretch
-        rect3.fill = SolidColorBrush(Colors.green)  // 填充色
-        try?Grid.setRow(rect3, 1)        // 放在第 0 行（首行）
-        try?Grid.setColumn(rect3, 0)
+        rect3.width = 80
+        rect3.height = 80
+        rect3.horizontalAlignment = .center
+        rect3.verticalAlignment = .center
+        rect3.fill = SolidColorBrush(Colors.green)
+        try? Grid.setRow(rect3, 1)
+        try? Grid.setColumn(rect3, 0)
         rect3.margin = Thickness(left: 10, top: 10, right: 10, bottom: 10)
         grid.children.append(rect3)
 
         let rect4 = Rectangle()
-        rect4.horizontalAlignment = .stretch
-        rect4.verticalAlignment = .stretch
-        rect4.fill = SolidColorBrush(Colors.yellow)  // 填充色
-        try?Grid.setRow(rect4, 1)        // 放在第 0 行（首行）
-        try?Grid.setColumn(rect4, 1)
+        rect4.width = 80
+        rect4.height = 80
+        rect4.horizontalAlignment = .center
+        rect4.verticalAlignment = .center
+        rect4.fill = SolidColorBrush(Colors.yellow)
+        try? Grid.setRow(rect4, 1)
+        try? Grid.setColumn(rect4, 1)
         rect4.margin = Thickness(left: 10, top: 10, right: 10, bottom: 10)
         grid.children.append(rect4)
 
-
         leftPanel.children.append(grid)
 
-        let rightPanel = StackPanel()//右边容器布局
+        // 右边容器布局
+        let rightPanel = StackPanel()
         rightPanel.height = Double(400)
         rightPanel.background = SolidColorBrush(Colors.white)
         rightPanel.borderThickness = Thickness(left: 0, top: 1, right: 1, bottom: 1)
@@ -171,7 +182,7 @@ class GridPage: Grid {
         rightPanel.padding = Thickness(left: 10, top: 10, right: 10, bottom: 10)
         rightPanel.orientation = Orientation.vertical
 
-        //Grid滑动条
+        // -------------------------- 上组：控制 Grid 行列间距 --------------------------
         let topGroup = StackPanel()
         topGroup.orientation = .vertical
         topGroup.horizontalAlignment = .left
@@ -179,7 +190,11 @@ class GridPage: Grid {
 
         let topLabel = TextBlock()
         topLabel.text = "Grid"
+        topLabel.foreground = SolidColorBrush(Colors.black)
         topLabel.fontSize = 16
+
+
+        // 列间距（ColumnSpacing）滑动条
         let topColText = TextBlock()
         topColText.text = "ColumnSpacing"
         topColText.foreground = SolidColorBrush(Colors.black)
@@ -188,6 +203,19 @@ class GridPage: Grid {
         topColumn.orientation = .vertical
         topColumn.horizontalAlignment = .left
         topColumn.margin = Thickness(left: 5, top: 5, right: 5, bottom: 5)
+        let topColSlider = Slider()
+        topColSlider.width = 100
+        topColSlider.minimum = 0
+        topColSlider.maximum = 50
+        topColSlider.requestedTheme = ElementTheme.light
+        topColSlider.value = 0  // 初始间距：0
+        // 绑定事件：更新 Grid 列间距
+        topColSlider.valueChanged.addHandler { [weak self] sender, args in
+            guard let self = self, let args = args, let grid = self.grid else { return }
+            grid.columnSpacing = args.newValue
+        }
+
+        // 行间距（RowSpacing）滑动条
         let topRowText = TextBlock()
         topRowText.text = "RowSpacing"
         topRowText.foreground = SolidColorBrush(Colors.black)
@@ -196,32 +224,34 @@ class GridPage: Grid {
         topRow.orientation = .vertical
         topRow.horizontalAlignment = .left
         topRow.margin = Thickness(left: 5, top: 5, right: 5, bottom: 5)
-        let topColSlider = Slider()
-        topColSlider.width = 100  // 滑块宽度swift run
-        topColSlider.minimum = 0
-        topColSlider.maximum = 50 
-        topColSlider.requestedTheme = ElementTheme.light
         let topRowSlider = Slider()
         topRowSlider.orientation = .vertical
-        topRowSlider.height = 100  // 滑块宽度
+        topRowSlider.height = 100
         topRowSlider.minimum = 0
-        topRowSlider.maximum = 50 
-        topRowSlider.isDirectionReversed = true  // 默认是 false，设置为 true 即可反转
+        topRowSlider.maximum = 50
+        topRowSlider.isDirectionReversed = true
         topRowSlider.requestedTheme = ElementTheme.light
+        topRowSlider.value = 0  // 初始间距：0
+        // 绑定事件：更新 Grid 行间距
+        topRowSlider.valueChanged.addHandler { [weak self] sender, args in
+            guard let self = self, let args = args, let grid = self.grid else { return }
+            grid.rowSpacing = args.newValue
+        }
 
-        let top = StackPanel()
-        top.orientation = .horizontal
-        top.horizontalAlignment = .left
-
+        // 组装上组布局
         topColumn.children.append(topColText)
         topColumn.children.append(topColSlider)
         topRow.children.append(topRowText)
         topRow.children.append(topRowSlider)
+        let top = StackPanel()
+        top.orientation = .horizontal
+        top.horizontalAlignment = .left
         top.children.append(topColumn)
         top.children.append(topRow)
         topGroup.children.append(topLabel)
         topGroup.children.append(top)
 
+        // -------------------------- 下组：控制红色矩形位置 --------------------------
         let bottomGroup = StackPanel()
         bottomGroup.orientation = .vertical
         bottomGroup.horizontalAlignment = .left
@@ -231,6 +261,8 @@ class GridPage: Grid {
         bottomLabel.text = "Red Block"
         bottomLabel.foreground = SolidColorBrush(Colors.black)
         bottomLabel.fontSize = 16
+
+        // 红色矩形列位置（Grid.Column）滑动条
         let bottomColText = TextBlock()
         bottomColText.text = "Grid.Column"
         bottomColText.foreground = SolidColorBrush(Colors.black)
@@ -239,6 +271,20 @@ class GridPage: Grid {
         bottomColumn.orientation = .vertical
         bottomColumn.horizontalAlignment = .left
         bottomColumn.margin = Thickness(left: 5, top: 5, right: 5, bottom: 5)
+        let bottomColSlider = Slider()
+        bottomColSlider.width = 100
+        bottomColSlider.minimum = 0
+        bottomColSlider.maximum = 2  // Grid 共 3 列（0/1/2），最大值设为 2
+        bottomColSlider.tickFrequency = 1  // 刻度间隔 1
+        bottomColSlider.requestedTheme = ElementTheme.light
+        bottomColSlider.value = 0  // 初始列：0（与 rect1 初始位置一致）
+        // 绑定事件：更新红色矩形的列位置
+        bottomColSlider.valueChanged.addHandler { [weak self] sender, args in
+            guard let self = self, let args = args, let rect = self.rect1 else { return }
+            try? Grid.setColumn(rect, Int32(args.newValue))
+        }
+
+        // 红色矩形行位置（Grid.Row）滑动条
         let bottomRowText = TextBlock()
         bottomRowText.text = "Grid.Row"
         bottomRowText.foreground = SolidColorBrush(Colors.black)
@@ -247,43 +293,45 @@ class GridPage: Grid {
         bottomRow.orientation = .vertical
         bottomRow.horizontalAlignment = .center
         bottomRow.margin = Thickness(left: 5, top: 5, right: 5, bottom: 5)
-        let bottomColSlider = Slider()
-        bottomColSlider.width = 100  // 滑块宽度
-        bottomColSlider.minimum = 0
-        bottomColSlider.maximum = 50 
-        bottomColSlider.requestedTheme = ElementTheme.light
         let bottomRowSlider = Slider()
         bottomRowSlider.orientation = .vertical
-        bottomRowSlider.height = 100  // 滑块宽度
+        bottomRowSlider.height = 100
         bottomRowSlider.minimum = 0
-        bottomRowSlider.maximum = 50 
-        bottomRowSlider.isDirectionReversed = true  // 默认是 false，设置为 true 即可反转
+        bottomRowSlider.maximum = 2  // Grid 共 3 行（0/1/2），最大值设为 2
+        bottomRowSlider.tickFrequency = 1  // 刻度间隔 1
+        bottomRowSlider.isDirectionReversed = true
         bottomRowSlider.requestedTheme = ElementTheme.light
+        bottomRowSlider.value = 0  // 初始行：0（与 rect1 初始位置一致）
+        // 绑定事件：更新红色矩形的行位置
+        bottomRowSlider.valueChanged.addHandler { [weak self] sender, args in
+            guard let self = self, let args = args, let rect = self.rect1 else { return }
+            try? Grid.setRow(rect, Int32(args.newValue))
+        }
 
-        let bottom = StackPanel()
-        bottom.orientation = .horizontal
-        bottom.horizontalAlignment = .left
-
+        // 组装下组布局
         bottomColumn.children.append(bottomColText)
         bottomColumn.children.append(bottomColSlider)
         bottomRow.children.append(bottomRowText)
         bottomRow.children.append(bottomRowSlider)
+        let bottom = StackPanel()
+        bottom.orientation = .horizontal
+        bottom.horizontalAlignment = .left
         bottom.children.append(bottomColumn)
         bottom.children.append(bottomRow)
         bottomGroup.children.append(bottomLabel)
         bottomGroup.children.append(bottom)
 
+        // 组装右侧面板
         rightPanel.children.append(topGroup)
         rightPanel.children.append(bottomGroup)
 
-
+        // 组装主布局
         showGrid.children.append(rightPanel)
         try? Grid.setColumn(rightPanel, 1)
         showGrid.children.append(leftPanel)
         try? Grid.setColumn(leftPanel, 0)
 
         mainPanel.children.append(showGrid)
-
     }
    
 

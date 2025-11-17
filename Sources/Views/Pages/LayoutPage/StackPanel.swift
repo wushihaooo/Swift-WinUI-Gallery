@@ -7,6 +7,7 @@ import WinUI
 class StackPanelPage: Grid {
     private var titleGrid = Grid()//标题
     private var mainPanel = StackPanel() 
+    private var innerPanel: StackPanel!
 
     override init() {
         super.init()
@@ -95,7 +96,7 @@ class StackPanelPage: Grid {
             bottomLeft: 10
         )
         
-        let innerPanel = StackPanel()
+        innerPanel = StackPanel()
         innerPanel.orientation = Orientation.horizontal
         innerPanel.verticalAlignment = VerticalAlignment.top
         innerPanel.padding = Thickness(left: 10, top: 10, right: 10, bottom: 10)
@@ -142,18 +143,35 @@ class StackPanelPage: Grid {
 
         let radioText = TextBlock()
         radioText.text = "Orientation"
+        radioText.foreground = SolidColorBrush(Colors.black)
         radioText.fontSize = 16
 
         // 第一个单选按钮
         let radioHorizontal = RadioButton()
-        radioHorizontal.content = "Horizontal"
+        let radioHorizontalText = TextBlock()
+        radioHorizontalText.text = "Horizontal"
+        radioHorizontalText.foreground = SolidColorBrush(Colors.black)
+        radioHorizontal.content = radioHorizontalText
         radioHorizontal.isChecked = true
+        // 绑定事件：选中时将 innerPanel 设为水平排列
+        radioHorizontal.checked.addHandler { [weak self] sender, args in
+            guard let self = self, let radio = sender as? RadioButton, radio.isChecked == true else { return }
+            self.innerPanel.orientation = .horizontal
+        }
         // 第二个单选按钮
         let radioVertical = RadioButton()
-        radioVertical.content = "Vertical"
+        let radioVerticalText = TextBlock()
+        radioVerticalText.text = "Vertical"
+        radioVerticalText.foreground = SolidColorBrush(Colors.black)
+        radioVertical.content = radioVerticalText
+        radioVertical.checked.addHandler { [weak self] sender, args in
+            guard let self = self, let radio = sender as? RadioButton, radio.isChecked == true else { return }
+            self.innerPanel.orientation = .vertical
+        }
         
         let sliderText = TextBlock()
         sliderText.text = "Spacing"
+        sliderText.foreground = SolidColorBrush(Colors.black)
         sliderText.fontSize = 16
 
         let slider = Slider()
@@ -161,6 +179,12 @@ class StackPanelPage: Grid {
         slider.maximum = 16
         slider.value = 0
         slider.stepFrequency = 1
+        slider.requestedTheme = ElementTheme.light
+        // 绑定事件：实时调整 innerPanel 的子元素间距
+        slider.valueChanged.addHandler { [weak self] sender, args in
+            guard let self = self, let args = args else { return }
+            self.innerPanel.spacing = args.newValue
+        }
         
         rightPanel.children.append(radioText)
         rightPanel.children.append(radioHorizontal)

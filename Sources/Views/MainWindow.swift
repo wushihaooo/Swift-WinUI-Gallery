@@ -283,6 +283,8 @@ class MainWindow: Window {
                 rootFrame.content = CommandBarPage()
             case MenusToolbarsCategory.commandBarFlyout:
                 rootFrame.content = CommandBarFlyoutPage()
+            case SystemCategory.filePicker:
+                rootFrame.content = StoragePickersPage()
             default:
                 break
             }

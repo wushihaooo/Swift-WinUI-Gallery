@@ -344,6 +344,14 @@ class MainWindow: Window {
                 rootFrame.content = TitlebarPage()
             case SystemCategory.filePicker:
                 rootFrame.content = StoragePickersPage()
+            case DialogsFlyoutsCategory.contentDialog:
+                rootFrame.content = ContentDialogPage()
+            case DialogsFlyoutsCategory.flyout:
+                rootFrame.content = FlyoutPage()
+            case DialogsFlyoutsCategory.popup:
+                rootFrame.content = PopupPage()
+            case DialogsFlyoutsCategory.teachingTip:
+                rootFrame.content = TeachingTipPage()
             default:
                 break
             }

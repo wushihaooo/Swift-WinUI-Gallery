@@ -7,6 +7,7 @@ import WinUI
 class RadioButtonsPage: Grid {
     private var titleGrid = Grid()//标题
     private var mainPanel = StackPanel() 
+    private var preview: Rectangle!
 
     override init() {
         super.init()
@@ -108,13 +109,22 @@ class RadioButtonsPage: Grid {
         greenText.foreground = SolidColorBrush(Colors.black)
         bgGreen.content = greenText
         bgGreen.isChecked = true // 默认选中
+        bgGreen.checked.addHandler { [weak self] sender, args in
+            guard let self = self, let radio = sender as? RadioButton, radio.isChecked == true else { return }
+            self.preview.fill = SolidColorBrush(Colors.green)
+        }
         backgroundGroup.children.append(bgGreen)
+
 
         let bgYellow = RadioButton()
         let yellowText = TextBlock()
         yellowText.text = "Yellow"
         yellowText.foreground = SolidColorBrush(Colors.black)
         bgYellow.content = yellowText
+        bgYellow.checked.addHandler { [weak self] sender, args in
+            guard let self = self, let radio = sender as? RadioButton, radio.isChecked == true else { return }
+            self.preview.fill = SolidColorBrush(Colors.yellow)
+        }
         backgroundGroup.children.append(bgYellow)
 
         let bgWhite = RadioButton()
@@ -122,6 +132,10 @@ class RadioButtonsPage: Grid {
         whiteText.text = "White"
         whiteText.foreground = SolidColorBrush(Colors.black)
         bgWhite.content = whiteText
+        bgWhite.checked.addHandler { [weak self] sender, args in
+            guard let self = self, let radio = sender as? RadioButton, radio.isChecked == true else { return }
+            self.preview.fill = SolidColorBrush(Colors.white)
+        }
         backgroundGroup.children.append(bgWhite)
 
         topPanel.children.append(backgroundGroup)
@@ -157,6 +171,10 @@ class RadioButtonsPage: Grid {
         bdGreenText.foreground = SolidColorBrush(Colors.black)
         bdGreen.content = bdGreenText
         bdGreen.isChecked = true // 默认选中
+        bdGreen.checked.addHandler { [weak self] sender, args in
+            guard let self = self, let radio = sender as? RadioButton, radio.isChecked == true else { return }
+            self.preview.stroke = SolidColorBrush(Colors.darkGreen)
+        }
         borderGroup.children.append(bdGreen)
 
         // 边框黄色选项
@@ -165,6 +183,10 @@ class RadioButtonsPage: Grid {
         bdYellowText.text = "Yellow"
         bdYellowText.foreground = SolidColorBrush(Colors.black)
         bdYellow.content = bdYellowText
+        bdYellow.checked.addHandler { [weak self] sender, args in
+            guard let self = self, let radio = sender as? RadioButton, radio.isChecked == true else { return }
+            self.preview.stroke = SolidColorBrush(Colors.darkGoldenrod)
+        }
         borderGroup.children.append(bdYellow)
 
         // 边框白色选项
@@ -173,6 +195,10 @@ class RadioButtonsPage: Grid {
         bdWhiteText.text = "White"
         bdWhiteText.foreground = SolidColorBrush(Colors.black)
         bdWhite.content = bdWhiteText
+        bdWhite.checked.addHandler { [weak self] sender, args in
+            guard let self = self, let radio = sender as? RadioButton, radio.isChecked == true else { return }
+            self.preview.stroke = SolidColorBrush(Colors.white)
+        }
         borderGroup.children.append(bdWhite)
 
         centerPanel.children.append(borderGroup)
@@ -190,7 +216,7 @@ class RadioButtonsPage: Grid {
         previewPanel.horizontalAlignment = .left
         previewPanel.verticalAlignment = .top
 
-        let preview = Rectangle()
+        preview = Rectangle()
         preview.height = 80
         preview.width = 400
         preview.fill = SolidColorBrush(Colors.green)

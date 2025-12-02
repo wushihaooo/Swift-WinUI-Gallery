@@ -344,8 +344,12 @@ class MainWindow: Window {
                 rootFrame.content = TitlebarPage()
             case SystemCategory.filePicker:
                 rootFrame.content = StoragePickersPage()
+            case SystemCategory.appNotifications:
+                rootFrame.content = AppNotificationsPage()
             case DialogsFlyoutsCategory.contentDialog:
                 rootFrame.content = ContentDialogPage()
+            case SystemCategory.badgeNotifications: 
+                rootFrame.content = BadgeNotificationsPage()
             case DialogsFlyoutsCategory.flyout:
                 rootFrame.content = FlyoutPage()
             case DialogsFlyoutsCategory.popup:

@@ -4,7 +4,7 @@ import WinAppSDK
 import WindowsFoundation
 import WinUI
 
-class MainWindow: Window {
+class MainWindow: Window, @unchecked Sendable{
     // MARK: -Properties
 
     // ViewModel
@@ -176,7 +176,7 @@ class MainWindow: Window {
     }
 
     private func setupNavigationView() {
-        self.navigationView.paneDisplayMode = .left
+        self.navigationView.paneDisplayMode = .auto
         self.navigationView.isSettingsVisible = true
         self.navigationView.openPaneLength = 320
         self.navigationView.isBackButtonVisible = .collapsed
@@ -233,17 +233,26 @@ class MainWindow: Window {
         return nil
     }
 
+    private func navigate() {
+        guard
+            let item = self.navigationView.selectedItem as? NavigationViewItem,
+            let tag = (item.tag as? Uri)?.host,
+            let category = self.findCategory(byRawValue: tag) else { return }
+        if (!category.canSelect) { return }
+        stack.append(category)
+        self.titleBar.isBackButtonVisible = !stack.isEmpty
+        self.viewModel.navigateCommand.execute(parameter: category)
+    }
+
     func bindViewModel() {
         // NavigationView切换View事件
-        navigationView.selectionChanged.addHandler { [unowned self] (_, _) in
-            guard
-                let item = self.navigationView.selectedItem as? NavigationViewItem,
-                let tag = (item.tag as? Uri)?.host,
-                let category = self.findCategory(byRawValue: tag) else { return }
-            if (!category.canSelect) { return }
-            stack.append(category)
-            self.titleBar.isBackButtonVisible = !stack.isEmpty
-            self.viewModel.navigateCommand.execute(parameter: category)
+        navigationView.selectionChanged.addHandler { [unowned self] (_, args) in
+            if (args?.isSettingsSelected == true) {
+                rootFrame.content = SettingsPage()
+                return
+            } else {
+                self.navigate()
+            }
         }
         titleBar.backRequested.addHandler { [unowned self] (_, _) in
             if !stack.isEmpty {
@@ -259,6 +268,27 @@ class MainWindow: Window {
 
         viewModel.propertyChanged = { [unowned self] propertyName in
             self.handlePropertyChanged(propertyName)
+        }
+
+        // 添加导航位置变化的监听
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name("NaviPositionChanged"),
+            object: nil,
+            queue: .main    
+        ) { [weak self] notification in
+            print("[MainWindow.swift--DEBUG] NaviPositionChanged: \(notification.object as? Int)")
+            guard let self = self, let index = notification.object as? Int else { return }
+            print("[MainWindow.swift--DEBUG] NaviPositionChanged: \(index)")
+            switch index {
+            case 0: // Left
+                print("Left")
+                self.navigationView.paneDisplayMode = .left
+            case 1: // Top
+                print("Top")
+                self.navigationView.paneDisplayMode = .top
+            default:
+                break
+            }
         }
 
         // 初始更新
@@ -344,8 +374,12 @@ class MainWindow: Window {
                 rootFrame.content = TitlebarPage()
             case SystemCategory.filePicker:
                 rootFrame.content = StoragePickersPage()
+            case SystemCategory.appNotifications:
+                rootFrame.content = AppNotificationsPage()
             case DialogsFlyoutsCategory.contentDialog:
                 rootFrame.content = ContentDialogPage()
+            case SystemCategory.badgeNotifications: 
+                rootFrame.content = BadgeNotificationsPage()
             case DialogsFlyoutsCategory.flyout:
                 rootFrame.content = FlyoutPage()
             case DialogsFlyoutsCategory.popup:
@@ -358,5 +392,8 @@ class MainWindow: Window {
         default:
             break
         }
+    }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }

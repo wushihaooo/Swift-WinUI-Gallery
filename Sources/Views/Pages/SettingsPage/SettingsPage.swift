@@ -350,6 +350,13 @@ class SettingsPage: Page, @unchecked Sendable {
                 break
             }
         }
+
+        self.naviComboBox.selectionChanged.addHandler { [weak self] sender, e in
+            guard let self = self else { return }
+            let idx = self.naviComboBox.selectedIndex
+            print("[DEBUG]: NaviPositionChanged: \(idx)")
+            NotificationCenter.default.post(name: NSNotification.Name("NaviPositionChanged"), object: Int(idx))
+        }
     }
 
     private func onSettingsPageLoaded(sender: Any?, e: RoutedEventArgs?) throws {
@@ -362,6 +369,7 @@ class SettingsPage: Page, @unchecked Sendable {
         default:
             break
         }
+        self.naviComboBox.selectedIndex = 0
     }
 
     private func createThemeMode() -> ComboBox {

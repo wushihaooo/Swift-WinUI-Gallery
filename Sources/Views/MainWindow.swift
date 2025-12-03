@@ -4,7 +4,7 @@ import WinAppSDK
 import WindowsFoundation
 import WinUI
 
-class MainWindow: Window {
+class MainWindow: Window, @unchecked Sendable{
     // MARK: -Properties
 
     // ViewModel
@@ -270,6 +270,27 @@ class MainWindow: Window {
             self.handlePropertyChanged(propertyName)
         }
 
+        // 添加导航位置变化的监听
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name("NaviPositionChanged"),
+            object: nil,
+            queue: .main    
+        ) { [weak self] notification in
+            print("[MainWindow.swift--DEBUG] NaviPositionChanged: \(notification.object as? Int)")
+            guard let self = self, let index = notification.object as? Int else { return }
+            print("[MainWindow.swift--DEBUG] NaviPositionChanged: \(index)")
+            switch index {
+            case 0: // Left
+                print("Left")
+                self.navigationView.paneDisplayMode = .left
+            case 1: // Top
+                print("Top")
+                self.navigationView.paneDisplayMode = .top
+            default:
+                break
+            }
+        }
+
         // 初始更新
         handlePropertyChanged("selectedCategory")
     }
@@ -371,5 +392,8 @@ class MainWindow: Window {
         default:
             break
         }
+    }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }

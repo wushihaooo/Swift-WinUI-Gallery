@@ -49,6 +49,16 @@ class MainWindow: Window, @unchecked Sendable{
         let micaBackdrop = MicaBackdrop()
         micaBackdrop.kind = .base
         self.systemBackdrop = micaBackdrop
+        // windows taskbar icon
+        if let appWindow = self.appWindow {
+            if let iconPath = Bundle.module.path(forResource: "GalleryIcon", ofType: "ico", inDirectory: "Assets/Tiles") {
+                do {
+                    try appWindow.setIcon(iconPath)
+                } catch {
+                    debugPrint("Failed to set appWindow icon: \(error)")
+                }
+            }
+        }
 
         self.setupRootGrid()
         self.setupTitleBar()

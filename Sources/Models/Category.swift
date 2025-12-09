@@ -41,7 +41,33 @@ enum MainCategory: String, Category {
     case text
     case windowing
 
-    var text: String { self.rawValue.capitalized }
+    static let rawValue2Title: [String: String] = [
+        "home": "Home",
+        "fundamentals": "Fundamentals",
+        "design": "Design",
+        "accessibility": "Accessibility",
+        "all": "All",
+        "basicInput": "Basic Input",
+        "collections": "Collections",
+        "dataTime": "Date & Time",
+        "dialogsFlyouts": "Dialogs & Flyouts",
+        "layout": "Layout",
+        "media": "Media",
+        "menusToolbars": "Menus & Toolbars",
+        "motion": "Motion",
+        "navigation": "Navigation",
+        "scrolling": "Scrolling",
+        "statusInfo": "Status Info",
+        "styles": "Styles",
+        "system": "System",
+        "text": "Text",
+        "windowing": "Windowing",
+    ]
+    var text: String { 
+        debugPrint("[DEBUG--MainWindow] rawValue: \(self.rawValue) \(type(of: self.rawValue))")
+        return Self.rawValue2Title[self.rawValue] ?? self.rawValue.capitalized 
+    }
+
     var glyph: String {
         switch self {
             case .home: return "\u{E80F}" 
@@ -148,7 +174,7 @@ enum CollectionsCategory: String, Category {
 
 
 enum DataTimeCategory: String, Category {
-    case calendarDataPicker, calendarView, datePicker, timePicker
+    case calendarDatePicker, calendarView, datePicker, timePicker
 }
 
 enum DialogsFlyoutsCategory: String, Category {

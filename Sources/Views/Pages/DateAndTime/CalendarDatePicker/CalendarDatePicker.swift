@@ -75,9 +75,18 @@ class CalendarDatePickerPage: Page {
         descText.text = "A control that lets users pick a date value using a calendar"
         bodyStackPanel.children.append(descText)
 
-        
+        let sample = CalendarDatePicker()
+        sample.header = "Calendar"
+        sample.placeholderText = "Pick a date"
 
-        self.bodyScrollViewer.content = exampleStackPanel
+        let card = DTControlExample()
+        card.headerText = "CalendarDatePicker with a header and placeholder text."
+        card.example = sample
+        card.xamlCode = "<CalendarDatePicker PlaceholderText=\"Pick a date\" Header=\"Calendar\" />"
+
+        bodyStackPanel.children.append(card.view)
+
+        self.bodyScrollViewer.content = bodyStackPanel
         
     }
 }

@@ -175,6 +175,16 @@ enum CollectionsCategory: String, Category {
 
 enum DataTimeCategory: String, Category {
     case calendarDatePicker, calendarView, datePicker, timePicker
+    var text: String { 
+        debugPrint("[DEBUG--MainWindow] rawValue: \(self.rawValue) \(type(of: self.rawValue))")
+        return Self.rawValue2Title[self.rawValue] ?? self.rawValue.capitalized 
+    }
+    static let rawValue2Title: [String: String] = [
+        "calendarDatePicker": "CalendarDatePicker",
+        "calendarView": "CalendarView",
+        "datePicker": "DatePicker",
+        "timePicker": "TimePicker"
+    ]
 }
 
 enum DialogsFlyoutsCategory: String, Category {

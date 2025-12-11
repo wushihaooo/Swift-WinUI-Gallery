@@ -4,7 +4,7 @@ import WinAppSDK
 import WindowsFoundation
 import WinUI
 
-class MainWindow: Window {
+class MainWindow: Window, @unchecked Sendable{
     // MARK: -Properties
 
     // ViewModel
@@ -16,7 +16,9 @@ class MainWindow: Window {
     private var rootFrame: Frame
     private var controlsSearchBox: AutoSuggestBox // 搜索功能
     private var currentPageTextBlock: TextBlock // 动态显示
-
+    private var forwardStack: [any Category] = [any Category]()
+    private var forwardButton: Button
+    private var backButton: Button
     private var stack: [any Category] = [any Category]()
 
     // MARK: -Initialization
@@ -30,6 +32,8 @@ class MainWindow: Window {
         self.titleBar = TitleBar()
         self.controlsSearchBox = AutoSuggestBox()
         self.currentPageTextBlock = TextBlock()
+        self.backButton = Button()
+        self.forwardButton = Button()
 
         super.init()
         self.content = self.rootGrid
@@ -45,6 +49,16 @@ class MainWindow: Window {
         let micaBackdrop = MicaBackdrop()
         micaBackdrop.kind = .base
         self.systemBackdrop = micaBackdrop
+        // windows taskbar icon
+        if let appWindow = self.appWindow {
+            if let iconPath = Bundle.module.path(forResource: "GalleryIcon", ofType: "ico", inDirectory: "Assets/Tiles") {
+                do {
+                    try appWindow.setIcon(iconPath)
+                } catch {
+                    debugPrint("Failed to set appWindow icon: \(error)")
+                }
+            }
+        }
 
         self.setupRootGrid()
         self.setupTitleBar()
@@ -89,20 +103,12 @@ class MainWindow: Window {
     private func setupTitleBar() {
         titleBar.name = "TitleBar"
         titleBar.title = "Swift WinUI 3 Gallery"
-        titleBar.isBackButtonVisible = self.rootFrame.canGoBack
+
+        // 关闭系统内置 Back 按钮，只保留汉堡按钮
+        titleBar.isBackButtonVisible = false
         titleBar.isPaneToggleButtonVisible = true
 
-        titleBar.backRequested.addHandler { [weak self] (_, _) in
-            guard let self = self else { return }
-            if self.rootFrame.canGoBack {
-                try? self.rootFrame.goBack()
-            }
-        }
-        titleBar.paneToggleRequested.addHandler { [weak self] (_, _) in
-            guard let self = self else { return }
-            self.navigationView.isPaneOpen.toggle()
-        }
-
+        // ---- App 图标 ----
         let appIcon = self.createImage(
             height: 16,
             width: 16,
@@ -111,40 +117,70 @@ class MainWindow: Window {
                 ofType: "ico",
                 inDirectory: "Assets/Tiles"
             )!,
-            imageThickness: [0, 0, 8, 0]
+            imageThickness: [8, 0, 8, 0]   // 左右稍微给点间距
         )
 
+        // ---- 主标题 ----
         let titleText = TextBlock()
         titleText.text = "Swift WinUI 3 Gallery"
         titleText.fontSize = 14
         titleText.verticalAlignment = .center
 
-        let subtitleText = TextBlock()
-        subtitleText.text = "Preview"
-        subtitleText.fontSize = 12
-        subtitleText.opacity = 0.75
-        subtitleText.verticalAlignment = .center
-        subtitleText.margin = Thickness(left: 6, top: 0, right: 0, bottom: 0)
+        // ---- 副标题：显示当前 Page 的标题 ----
+        currentPageTextBlock.fontSize = 12
+        currentPageTextBlock.opacity = 0.75
+        currentPageTextBlock.verticalAlignment = .center
+        currentPageTextBlock.margin = Thickness(left: 8, top: 0, right: 16, bottom: 0)
+        currentPageTextBlock.text = ""   // 初始化为空，后面在 handlePropertyChanged 里更新
 
-        let leftStack = StackPanel()
-        leftStack.orientation = .horizontal
-        leftStack.spacing = 0
-        leftStack.verticalAlignment = .center
-        leftStack.children.append(appIcon)
-        leftStack.children.append(titleText)
-        leftStack.children.append(subtitleText)
+        // ---- Back / Forward 按钮（像 VSCode）----
+        let backText = TextBlock()
+        backText.text = "←"
+        backText.verticalAlignment = .center
 
-        titleBar.leftHeader = leftStack
+        backButton.content = backText
+        backButton.verticalAlignment = .center
+        backButton.margin = Thickness(left: 0, top: 0, right: 4, bottom: 0)
+        backButton.isEnabled = false
+        backButton.click.addHandler { [weak self] _, _ in
+            self?.navigateBack()
+        }
 
-        self.controlsSearchBox.name = "controlsSearchBox"
-        self.controlsSearchBox.placeholderText = "Search controls and samples..."
-        self.controlsSearchBox.verticalAlignment = .center
-        self.controlsSearchBox.horizontalAlignment = .center
-        self.controlsSearchBox.minWidth = 380 
-        self.controlsSearchBox.margin = Thickness(left: 12, top: 0, right: 12, bottom: 0)
+        let forwardText = TextBlock()
+        forwardText.text = "→"
+        forwardText.verticalAlignment = .center
 
-        titleBar.content = self.controlsSearchBox
+        forwardButton.content = forwardText
+        forwardButton.verticalAlignment = .center
+        forwardButton.margin = Thickness(left: 0, top: 0, right: 12, bottom: 0)
+        forwardButton.isEnabled = false
+        forwardButton.click.addHandler { [weak self] _, _ in
+            self?.navigateForward()
+        }
 
+        // ---- Search 框 ----
+        controlsSearchBox.name = "controlsSearchBox"
+        controlsSearchBox.placeholderText = "Search controls and samples..."
+        controlsSearchBox.verticalAlignment = .center
+        controlsSearchBox.minWidth = 320
+
+        // ---- 中间整体一条横向布局：Icon → Title → Subtitle → Back/Forward → Search ----
+        let centerStack = StackPanel()
+        centerStack.orientation = .horizontal
+        centerStack.verticalAlignment = .center
+        centerStack.spacing = 0
+
+        centerStack.children.append(appIcon)
+        centerStack.children.append(titleText)
+        centerStack.children.append(currentPageTextBlock)
+        centerStack.children.append(backButton)
+        centerStack.children.append(forwardButton)
+        centerStack.children.append(controlsSearchBox)
+
+        // 把这一条横向布局放到 titleBar.content 里
+        titleBar.content = centerStack
+
+        // ---- 右侧头像保持不变 ----
         let avatar = Border()
         avatar.width = 32
         avatar.height = 32
@@ -158,12 +194,13 @@ class MainWindow: Window {
         avatarText.horizontalAlignment = .center
         avatarText.fontSize = 12
         avatar.child = avatarText
+
         titleBar.rightHeader = avatar
 
+        // 把 titleBar 放到根 Grid 的第 0 行
         self.rootGrid.children.append(titleBar)
         try? Grid.setRow(titleBar, 0)
     }
-
 
     private func setupSubCategories(category: any Category, navigationViewItem: NavigationViewItem) {
         if category.subCategories.isEmpty { return }
@@ -176,7 +213,7 @@ class MainWindow: Window {
     }
 
     private func setupNavigationView() {
-        self.navigationView.paneDisplayMode = .left
+        self.navigationView.paneDisplayMode = .auto
         self.navigationView.isSettingsVisible = true
         self.navigationView.openPaneLength = 320
         self.navigationView.isBackButtonVisible = .collapsed
@@ -232,6 +269,43 @@ class MainWindow: Window {
         }
         return nil
     }
+    private func updateNavButtonsState() {
+        backButton.isEnabled = stack.count > 1
+        forwardButton.isEnabled = !forwardStack.isEmpty
+    }
+
+    private func navigateBack() {
+        guard stack.count > 1 else { return }
+
+        // 当前页出栈，放进 forwardStack
+        let current = stack.removeLast()
+        forwardStack.append(current)
+
+        let previous = stack.last ?? MainCategory.home
+        viewModel.navigateCommand.execute(parameter: previous)
+
+        updateNavButtonsState()
+    }
+
+    private func navigateForward() {
+        guard let next = forwardStack.popLast() else { return }
+
+        stack.append(next)
+        viewModel.navigateCommand.execute(parameter: next)
+
+        updateNavButtonsState()
+    }
+
+    private func navigate() {
+        guard
+            let item = self.navigationView.selectedItem as? NavigationViewItem,
+            let tag = (item.tag as? Uri)?.host,
+            let category = self.findCategory(byRawValue: tag) else { return }
+        if (!category.canSelect) { return }
+        stack.append(category)
+        self.titleBar.isBackButtonVisible = !stack.isEmpty
+        self.viewModel.navigateCommand.execute(parameter: category)
+    }
 
     func bindViewModel() {
         // NavigationView切换View事件
@@ -240,25 +314,56 @@ class MainWindow: Window {
                 let item = self.navigationView.selectedItem as? NavigationViewItem,
                 let tag = (item.tag as? Uri)?.host,
                 let category = self.findCategory(byRawValue: tag) else { return }
-            if (!category.canSelect) { return }
-            stack.append(category)
-            self.titleBar.isBackButtonVisible = !stack.isEmpty
+            if !category.canSelect { return }
+
+            // 用户主动点菜单：清空“前进”历史
+            self.forwardStack.removeAll()
+
+            self.stack.append(category)
             self.viewModel.navigateCommand.execute(parameter: category)
+
+            self.updateNavButtonsState()
         }
-        titleBar.backRequested.addHandler { [unowned self] (_, _) in
+
+        /*tleBar.backRequested.addHandler { [unowned self] (_, _) in
             if !stack.isEmpty {
-                _ = stack.popLast()
+                // 当前页面出栈，压到 forwardStack 里
+                let current = stack.popLast()!
+                self.forwardStack.append(current)
+
                 let previousCategory = stack.last ?? MainCategory.home
                 self.viewModel.navigateCommand.execute(parameter: previousCategory)
             }
             self.titleBar.isBackButtonVisible = !stack.isEmpty
-        }
+            self.forwardButton.isEnabled = !self.forwardStack.isEmpty
+        }*/
         if let firstItem = navigationView.menuItems.first {
             navigationView.selectedItem = firstItem
         }
 
         viewModel.propertyChanged = { [unowned self] propertyName in
             self.handlePropertyChanged(propertyName)
+        }
+
+        // 添加导航位置变化的监听
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name("NaviPositionChanged"),
+            object: nil,
+            queue: .main    
+        ) { [weak self] notification in
+            print("[MainWindow.swift--DEBUG] NaviPositionChanged: \(notification.object as? Int)")
+            guard let self = self, let index = notification.object as? Int else { return }
+            print("[MainWindow.swift--DEBUG] NaviPositionChanged: \(index)")
+            switch index {
+            case 0: // Left
+                print("Left")
+                self.navigationView.paneDisplayMode = .left
+            case 1: // Top
+                print("Top")
+                self.navigationView.paneDisplayMode = .top
+            default:
+                break
+            }
         }
 
         // 初始更新
@@ -269,6 +374,7 @@ class MainWindow: Window {
         switch propertyName {
         case "selectedCategory":
             let item: any Category = viewModel.selectedCategory
+            self.currentPageTextBlock.text = item.text
             switch item {
             case MainCategory.home:
                 rootFrame.content = HomePage()
@@ -344,8 +450,12 @@ class MainWindow: Window {
                 rootFrame.content = TitlebarPage()
             case SystemCategory.filePicker:
                 rootFrame.content = StoragePickersPage()
+            case SystemCategory.appNotifications:
+                rootFrame.content = AppNotificationsPage()
             case DialogsFlyoutsCategory.contentDialog:
                 rootFrame.content = ContentDialogPage()
+            case SystemCategory.badgeNotifications: 
+                rootFrame.content = BadgeNotificationsPage()
             case DialogsFlyoutsCategory.flyout:
                 rootFrame.content = FlyoutPage()
             case DialogsFlyoutsCategory.popup:
@@ -358,5 +468,8 @@ class MainWindow: Window {
         default:
             break
         }
+    }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }

@@ -91,13 +91,13 @@ open class HomePage: Grid {
         headerPanel.spacing = 8
         
         let sdkText = TextBlock()
-        sdkText.text = "Windows App SDK 1.8"
+        sdkText.text = "Windows App SDK \(ReleaseInfo.asString)"
         sdkText.fontSize = 14
         sdkText.opacity = 0.6
         headerPanel.children.append(sdkText)
         
         let titleText = TextBlock()
-        titleText.text = "WinUI 3 Gallery"
+        titleText.text = "Swift WinUI 3 Gallery"
         titleText.fontSize = 40
         headerPanel.children.append(titleText)
         

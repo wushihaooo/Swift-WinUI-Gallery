@@ -85,12 +85,16 @@ class AppBarToggleButtonPage: Grid {
         example1.children.append(demo1)
         
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example1)!)
-        exampleStackPanel.children.append(ControlExample(
-            headerText: "An AppBarToggleButton with a symbol icon.",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: example1
-        ).controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "An AppBarToggleButton with a symbol icon" 
+        controlExample.example = example1
+        exampleStackPanel.children.append(controlExample.view)
+        // exampleStackPanel.children.append(ControlExample(
+        //     headerText: "An AppBarToggleButton with a symbol icon.",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: false,
+        //     contentPresenter: example1
+        // ).controlExample)
         
         // Example 2: Bitmap icon
         let example2: Grid = try! page.findName("Example2") as! Grid
@@ -98,12 +102,16 @@ class AppBarToggleButtonPage: Grid {
         example2.children.append(demo2)
         
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example2)!)
-        exampleStackPanel.children.append(ControlExample(
-            headerText: "An AppBarToggleButton with a bitmap icon.",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: example2
-        ).controlExample)
+        let controlExample2 = ControlExample()
+        controlExample2.headerText = "An AppBarToggleButton with a bitmap icon"
+        controlExample2.example = example2
+        exampleStackPanel.children.append(controlExample2.view)
+        // exampleStackPanel.children.append(ControlExample(
+        //     headerText: "An AppBarToggleButton with a bitmap icon.",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: false,
+        //     contentPresenter: example2
+        // ).controlExample)
         
         // Example 3: Font icon
         let example3: Grid = try! page.findName("Example3") as! Grid
@@ -111,12 +119,16 @@ class AppBarToggleButtonPage: Grid {
         example3.children.append(demo3)
         
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example3)!)
-        exampleStackPanel.children.append(ControlExample(
-            headerText: "An AppBarToggleButton with a font icon.",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: example3
-        ).controlExample)
+        let controlExample3 = ControlExample()
+        controlExample3.headerText = "An AppBarToggleButton with a font icon"
+        controlExample3.example = example3
+        exampleStackPanel.children.append(controlExample3.view)
+        // exampleStackPanel.children.append(ControlExample(
+        //     headerText: "An AppBarToggleButton with a font icon.",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: false,
+        //     contentPresenter: example3
+        // ).controlExample)
         
         // Example 4: Three-state with path icon
         let example4: Grid = try! page.findName("Example4") as! Grid
@@ -124,12 +136,16 @@ class AppBarToggleButtonPage: Grid {
         example4.children.append(demo4)
         
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example4)!)
-        exampleStackPanel.children.append(ControlExample(
-            headerText: "A three-state AppBarToggleButton with a path icon.",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: example4
-        ).controlExample)
+        let controlExample4 = ControlExample()
+        controlExample4.headerText = "A three-state AppBarToggleButton with a path icon."
+        controlExample4.example = example4
+        exampleStackPanel.children.append(controlExample4.view)
+        // exampleStackPanel.children.append(ControlExample(
+        //     headerText: "A three-state AppBarToggleButton with a path icon.",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: false,
+        //     contentPresenter: example4
+        // ).controlExample)
     }
     
     private func createExample1() -> StackPanel {

@@ -74,11 +74,15 @@ class PullToRefreshPage: Page {
         stackPanel.horizontalAlignment = .left
         stackPanel.children.append(refreshContainer)
 
-        let Example1 = ControlExample(
-            headerText: "Basic PullToRefresh",
-            contentPresenter: stackPanel,
-        )
-        self.stackPanel.children.append(Example1.controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "Basic PullToRefresh"
+        controlExample.example = stackPanel
+        self.stackPanel.children.append(controlExample.view)
+        // let Example1 = ControlExample(
+        //     headerText: "Basic PullToRefresh",
+        //     contentPresenter: stackPanel,
+        // )
+        // self.stackPanel.children.append(Example1.controlExample)
     }
 
     private func setupExample2() {
@@ -100,10 +104,14 @@ class PullToRefreshPage: Page {
         stackPanel.horizontalAlignment = .left
         stackPanel.children.append(refreshContainer)
 
-        let Example1 = ControlExample(
-            headerText: "Basic PullToRefresh",
-            contentPresenter: stackPanel,
-        )
-        self.stackPanel.children.append(Example1.controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "Basic PullToRefresh"
+        controlExample.example = stackPanel
+        self.stackPanel.children.append(controlExample.view)
+        // let Example1 = ControlExample(
+        //     headerText: "Basic PullToRefresh",
+        //     contentPresenter: stackPanel,
+        // )
+        // self.stackPanel.children.append(Example1.controlExample)
     }
 }

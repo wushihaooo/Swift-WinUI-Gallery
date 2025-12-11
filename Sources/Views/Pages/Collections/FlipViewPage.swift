@@ -34,12 +34,16 @@ class FlipViewPage: Grid {
         }
 
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example1)!)
-        self.exampleStackPanel.children.append(ControlExample(
-            headerText: "A simple FlipView with items declared inline",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: example1
-        ).controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "A simple FlipView with items declared inline"
+        controlExample.example = example1
+        self.exampleStackPanel.children.append(controlExample.view)
+        // self.exampleStackPanel.children.append(ControlExample(
+        //     headerText: "A simple FlipView with items declared inline",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: false,
+        //     contentPresenter: example1
+        // ).controlExample)
     }
 
     let bindFlipViewItems: [String] = ["Resources", "Style", "Binding", "Templates", "CustomControls", "ScratchPad"]
@@ -105,12 +109,16 @@ class FlipViewPage: Grid {
             bindFlipView.items.append(t_grid)
         }
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example2)!)
-        self.exampleStackPanel.children.append(ControlExample(
-            headerText: "A simple FlipView with items declared inline",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: example2
-        ).controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "A simple FlipView with items declared inline"
+        controlExample.example = example2
+        self.exampleStackPanel.children.append(controlExample.view)
+        // self.exampleStackPanel.children.append(ControlExample(
+        //     headerText: "A simple FlipView with items declared inline",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: false,
+        //     contentPresenter: example2
+        // ).controlExample)
     }
     
     private func setupVerticalFlipView() {
@@ -122,12 +130,16 @@ class FlipViewPage: Grid {
             verticalFlipView.items.append(image)
         }
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example3)!)
-        self.exampleStackPanel.children.append(ControlExample(
-            headerText: "Vertical FlipView",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: example3
-        ).controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "Vertical FlipView"
+        controlExample.example = example3
+        self.exampleStackPanel.children.append(controlExample.view)
+        // self.exampleStackPanel.children.append(ControlExample(
+        //     headerText: "Vertical FlipView",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: false,
+        //     contentPresenter: example3
+        // ).controlExample)
     }
 
     private func loadXamlFromFile(filePath: String) {

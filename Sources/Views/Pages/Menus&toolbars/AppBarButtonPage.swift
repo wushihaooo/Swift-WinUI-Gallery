@@ -127,12 +127,16 @@ class AppBarButtonPage: Grid {
         example1.children.append(demoGrid)
         
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example1)!)
-        exampleStackPanel.children.append(ControlExample(
-            headerText: "An AppBarButton with a symbol icon",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: example1
-        ).controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "An AppBarButton with a symbol icon"
+        controlExample.example = example1
+        exampleStackPanel.children.append(controlExample.view)
+        // exampleStackPanel.children.append(ControlExample(
+        //     headerText: "An AppBarButton with a symbol icon",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: false,
+        //     contentPresenter: example1
+        // ).controlExample)
     }
     
     private func onDemoButtonClicked() {

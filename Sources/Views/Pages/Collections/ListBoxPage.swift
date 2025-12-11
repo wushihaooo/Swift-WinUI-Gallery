@@ -96,11 +96,15 @@ class ListBoxPage: Page {
         let stackPanel = StackPanel()
         stackPanel.children.append(listBox)
         stackPanel.children.append(rectangle)
-        let Example1 = ControlExample(
-            headerText: "A ListBox with items defined inline and its minimum width set.",
-            contentPresenter: stackPanel,
-        )
-        self.stackPanel.children.append(Example1.controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "A ListBox with items defined inline and its minimum width set."
+        controlExample.example = stackPanel
+        self.stackPanel.children.append(controlExample.view)
+        // let Example1 = ControlExample(
+        //     headerText: "A ListBox with items defined inline and its minimum width set.",
+        //     contentPresenter: stackPanel,
+        // )
+        // self.stackPanel.children.append(Example1.controlExample)
     }
 
     private func setupExample2() {
@@ -143,10 +147,14 @@ class ListBoxPage: Page {
         let stackPanel = StackPanel()
         stackPanel.children.append(listBox)
         stackPanel.children.append(textBlock)
-        let Example1 = ControlExample(
-            headerText: "A ListBox with its ItemsSource and Height set.",
-            contentPresenter: stackPanel,
-        )
-        self.stackPanel.children.append(Example1.controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "A ListBox with its ItemsSource and Height set."
+        controlExample.example = stackPanel
+        self.stackPanel.children.append(controlExample.view)
+        // let Example1 = ControlExample(
+        //     headerText: "A ListBox with its ItemsSource and Height set.",
+        //     contentPresenter: stackPanel,
+        // )
+        // self.stackPanel.children.append(Example1.controlExample)
     }
 }

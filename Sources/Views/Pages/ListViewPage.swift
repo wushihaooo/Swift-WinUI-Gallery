@@ -214,13 +214,18 @@ class ListViewPage: Grid {
         stackPanel.children.append(btn1)
         stackPanel.children.append(btn2)
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example6)!)
-        self.exampleStackPanel.children.append(ControlExample(
-            headerText: "ListView for Messaging or Data Logging",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: example6,
-            optionsPresenter: stackPanel
-        ).controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "ListView for Messaging or Data Logging"
+        controlExample.example = example6
+        controlExample.options = stackPanel
+        self.exampleStackPanel.children.append(controlExample.view)
+        // self.exampleStackPanel.children.append(ControlExample(
+        //     headerText: "ListView for Messaging or Data Logging",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: true,
+        //     contentPresenter: example6,
+        //     optionsPresenter: stackPanel
+        // ).controlExample)
     }
 
     private class ListViewItemData
@@ -353,12 +358,16 @@ class ListViewPage: Grid {
             control4.items.append(itemGrid)
         }
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example7)!)
-        self.exampleStackPanel.children.append(ControlExample(
-            headerText: "ListView with Images",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: example7
-        ).controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "ListView with Images"
+        controlExample.example = example7
+        self.exampleStackPanel.children.append(controlExample.view)
+        // self.exampleStackPanel.children.append(ControlExample(
+        //     headerText: "ListView with Images",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: false,
+        //     contentPresenter: example7
+        // ).controlExample)
     }
 
     private func setupExample8() {
@@ -379,12 +388,16 @@ class ListViewPage: Grid {
             }
         }
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example8)!)
-        self.exampleStackPanel.children.append(ControlExample(
-            headerText: "ListView with context menus",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: example8
-        ).controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "ListView with context menus"
+        controlExample.example = example8
+        self.exampleStackPanel.children.append(controlExample.view)
+        // self.exampleStackPanel.children.append(ControlExample(
+        //     headerText: "ListView with context menus",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: false,
+        //     contentPresenter: example8
+        // ).controlExample)
     }
 
     private func createContactListView(name: String, company: String) -> Grid {

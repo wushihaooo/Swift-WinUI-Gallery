@@ -71,12 +71,16 @@ class AppBarSeparatorPage: Grid {
         example1.children.append(demoContainer)
         
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example1)!)
-        exampleStackPanel.children.append(ControlExample(
-            headerText: "AppBarButtons separated by AppBarSeparators",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: example1
-        ).controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "AppBarButtons separated by AppBarSeparators"
+        controlExample.example = example1
+        exampleStackPanel.children.append(controlExample.view)
+        // exampleStackPanel.children.append(ControlExample(
+        //     headerText: "AppBarButtons separated by AppBarSeparators",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: false,
+        //     contentPresenter: example1
+        // ).controlExample)
     }
     
     private func createDemoArea() -> Grid {

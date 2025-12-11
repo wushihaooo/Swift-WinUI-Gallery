@@ -76,13 +76,18 @@ class CommandBarPage: Grid {
         example3.children.append(demo)
         
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example3)!)
-        exampleStackPanel.children.append(ControlExample(
-            headerText: "A command bar with labels on the side free floating in a page",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: example3,
-            optionsPresenter: createOptionsPanel()
-        ).controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "A command bar with labels on the side free floating in a page" 
+        controlExample.example = example3
+        controlExample.options = createOptionsPanel()
+        exampleStackPanel.children.append(controlExample.view)
+        // exampleStackPanel.children.append(ControlExample(
+        //     headerText: "A command bar with labels on the side free floating in a page",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: true,
+        //     contentPresenter: example3,
+        //     optionsPresenter: createOptionsPanel()
+        // ).controlExample)
     }
     
     private func createCommandBarDemo() -> Grid {

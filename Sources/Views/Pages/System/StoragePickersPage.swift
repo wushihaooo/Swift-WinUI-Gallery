@@ -343,53 +343,49 @@ class StoragePickersPage: Grid {
         let exampleContent = createPickSingleFileExample()
         let optionsContent = createPickSingleFileOptions()
         
-        let controlExample = ControlExample(
-            headerText: "Pick single file",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: exampleContent,
-            optionsPresenter: optionsContent
-        )
-        mainStack.children.append(controlExample.controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "Pick single file"
+        controlExample.example = exampleContent
+        controlExample.options = optionsContent
+        mainStack.children.append(controlExample.view)
+        // let controlExample = ControlExample(
+        //     headerText: "Pick single file",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: true,
+        //     contentPresenter: exampleContent,
+        //     optionsPresenter: optionsContent
+        // )
+        // mainStack.children.append(controlExample.controlExample)
         
         // Pick Multiple Files - 使用ControlExample包装
         let multipleExampleContent = createPickMultipleFilesExample()
         let multipleOptionsContent = createPickMultipleFilesOptions()
         
-        let multipleControlExample = ControlExample(
-            headerText: "Pick multiple files",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: multipleExampleContent,
-            optionsPresenter: multipleOptionsContent
-        )
-        mainStack.children.append(multipleControlExample.controlExample)
+        let multipleControlExample = ControlExample()
+        multipleControlExample.headerText = "Pick multiple files"
+        multipleControlExample.example = multipleExampleContent
+        multipleControlExample.options = multipleOptionsContent
+        mainStack.children.append(multipleControlExample.view)
         
         // Save File - 使用ControlExample包装
         let saveExampleContent = createSaveFileExample()
         let saveOptionsContent = createSaveFileOptions()
         
-        let saveControlExample = ControlExample(
-            headerText: "Save file",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: saveExampleContent,
-            optionsPresenter: saveOptionsContent
-        )
-        mainStack.children.append(saveControlExample.controlExample)
+        let saveControlExample = ControlExample()
+        saveControlExample.headerText = "Save file"
+        saveControlExample.example = saveExampleContent
+        saveControlExample.options = saveOptionsContent
+        mainStack.children.append(saveControlExample.view)
         
         // Pick Folder - 使用ControlExample包装
         let folderExampleContent = createPickFolderExample()
         let folderOptionsContent = createPickFolderOptions()
         
-        let folderControlExample = ControlExample(
-            headerText: "Pick folder",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: folderExampleContent,
-            optionsPresenter: folderOptionsContent
-        )
-        mainStack.children.append(folderControlExample.controlExample)
+        let folderControlExample = ControlExample()
+        folderControlExample.headerText = "Pick folder"
+        folderControlExample.example = folderExampleContent
+        folderControlExample.options = folderOptionsContent
+        mainStack.children.append(folderControlExample.view)
         
         // 将mainStack包装在ScrollViewer中
         let scrollViewer = ScrollViewer()

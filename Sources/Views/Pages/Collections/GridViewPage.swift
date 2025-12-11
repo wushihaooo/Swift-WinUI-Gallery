@@ -78,12 +78,16 @@ class GridViewPage: Grid {
             }
         }
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example1)!)
-        self.exampleStackPanel.children.append(ControlExample(
-            headerText: "GridView with Layout Customization",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: example1
-        ).controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "GridView with Layout Customization"
+        controlExample.example = example1
+        self.exampleStackPanel.children.append(controlExample.view)
+        // self.exampleStackPanel.children.append(ControlExample(
+        //     headerText: "GridView with Layout Customization",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: false,
+        //     contentPresenter: example1
+        // ).controlExample)
     }
     func createStyledNumberBox(header: String, minValue: Double, maxValue: Double, value: Double, valueChangedHandler: @escaping (Double) -> Void) -> StackPanel {
         let stackPanel = StackPanel()
@@ -185,13 +189,18 @@ class GridViewPage: Grid {
         }
 
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example1)!)
-        self.exampleStackPanel.children.append(ControlExample(
-            headerText: "Basic GridView with Simple DataTemplate",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: example1,
-            optionsPresenter: createNumberBoxControls(styleGrid: styleGrid)
-        ).controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "Basic GridView with Simple DataTemplate"
+        controlExample.options = createNumberBoxControls(styleGrid: styleGrid)
+        controlExample.example = example1
+        self.exampleStackPanel.children.append(controlExample.view)
+        // self.exampleStackPanel.children.append(ControlExample(
+        //     headerText: "Basic GridView with Simple DataTemplate",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: true,
+        //     contentPresenter: example1,
+        //     optionsPresenter: createNumberBoxControls(styleGrid: styleGrid)
+        // ).controlExample)
     }
 
     private func loadXamlFromFile(filePath: String) {

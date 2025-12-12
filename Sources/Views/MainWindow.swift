@@ -463,6 +463,9 @@ class MainWindow: Window, @unchecked Sendable {
             return NumberBoxPage()
         case TextCategory.passwordBox:
             return PasswordBoxPage()
+        case TextCategory.textBlock:
+            return TextBlockPage()
+            
         default:
             // 没实现的页面先给个空 Grid，避免崩溃
             return Grid()

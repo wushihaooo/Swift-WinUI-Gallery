@@ -457,6 +457,12 @@ class MainWindow: Window, @unchecked Sendable {
         case DialogsFlyoutsCategory.teachingTip:
             return TeachingTipPage()
 
+        case TextCategory.autoSuggestBox:
+            return AutoSuggestBoxPage()
+        case TextCategory.numberBox:
+            return NumberBoxPage()
+        case TextCategory.passwordBox:
+            return PasswordBoxPage()
         default:
             // 没实现的页面先给个空 Grid，避免崩溃
             return Grid()

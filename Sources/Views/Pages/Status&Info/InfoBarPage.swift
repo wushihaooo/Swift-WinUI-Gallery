@@ -157,15 +157,12 @@ class InfoBarPage: Grid {
         optionsPanel.children.append(severityCombo)
         
         // 放进 ControlExample
-        let example = ControlExample(
-            headerText: "A closable InfoBar with options to change its Severity.",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: infoBar,
-            optionsPresenter: optionsPanel
-        ).controlExample
+        let example = ControlExample()
+        example.headerText = "A closable InfoBar with options to change its Severity."
+        example.example = infoBar
+        example.options = optionsPanel
         
-        exampleStackPanel.children.append(example)
+        exampleStackPanel.children.append(example.view)
     }
     
     // MARK: - Example 2
@@ -263,15 +260,12 @@ class InfoBarPage: Grid {
         }
         optionsPanel.children.append(actionCombo)
         
-        let example = ControlExample(
-            headerText: "A closable InfoBar with a long or short message and various buttons",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: infoBar,
-            optionsPresenter: optionsPanel
-        ).controlExample
+        let example = ControlExample()
+        example.headerText = "A closable InfoBar with a long or short message and various buttons"
+        example.example = infoBar
+        example.options = optionsPanel
         
-        exampleStackPanel.children.append(example)
+        exampleStackPanel.children.append(example.view)
     }
     
     // MARK: - Example 3
@@ -323,14 +317,11 @@ class InfoBarPage: Grid {
         }
         optionsPanel.children.append(closableCheck)
         
-        let example = ControlExample(
-            headerText: "A closable InfoBar with options to display the close button and icon",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: infoBar,
-            optionsPresenter: optionsPanel
-        ).controlExample
+        let example = ControlExample()
+        example.headerText = "A closable InfoBar with options to display the close button and icon"
+        example.example = infoBar
+        example.options = optionsPanel
         
-        exampleStackPanel.children.append(example)
+        exampleStackPanel.children.append(example.view)
     }
 }

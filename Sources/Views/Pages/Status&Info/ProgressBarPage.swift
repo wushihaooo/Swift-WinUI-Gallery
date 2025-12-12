@@ -115,15 +115,12 @@ class ProgressBarPage: Grid {
             }
         }
 
-        let example = ControlExample(
-            headerText: "An indeterminate progress bar.",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: progressBar,
-            optionsPresenter: optionsPanel
-        ).controlExample
+        let example = ControlExample()
+        example.headerText = "An indeterminate progress bar."
+        example.example = progressBar
+        example.options = optionsPanel
 
-        exampleStackPanel.children.append(example)
+        exampleStackPanel.children.append(example.view)
     }
 
     // MARK: - Example 2: A determinate progress bar.
@@ -253,15 +250,11 @@ class ProgressBarPage: Grid {
         numberGrid.height = 32
         rightPanel.children.append(numberGrid)
 
-        let example = ControlExample(
-            headerText: "A determinate progress bar.",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: contentGrid,
-            optionsPresenter: StackPanel()   // 占位，不显示
-        ).controlExample
+        let example = ControlExample()
+        example.headerText = "A determinate progress bar."
+        example.example = contentGrid
 
-        exampleStackPanel.children.append(example)
+        exampleStackPanel.children.append(example.view)
     }
 
     // MARK: - Fluent Icon helpers

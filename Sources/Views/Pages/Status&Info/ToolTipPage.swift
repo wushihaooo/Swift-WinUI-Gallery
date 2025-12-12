@@ -83,15 +83,11 @@ class ToolTipPage: Grid {
 
         _ = try? ToolTipService.setToolTip(button, tip)
 
-        let example = ControlExample(
-            headerText: "A button with a simple ToolTip.",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: button,
-            optionsPresenter: StackPanel()
-        ).controlExample
+        let example = ControlExample()
+        example.headerText = "A button with a simple ToolTip."
+        example.example = button
 
-        exampleStackPanel.children.append(example)
+        exampleStackPanel.children.append(example.view)
     }
 
     // MARK: - Example 2: A TextBlock with an offset ToolTip.
@@ -108,15 +104,11 @@ class ToolTipPage: Grid {
 
         _ = try? ToolTipService.setPlacement(textBlock, PlacementMode.bottom)
 
-        let example = ControlExample(
-            headerText: "A TextBlock with an offset ToolTip.",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: textBlock,
-            optionsPresenter: StackPanel()
-        ).controlExample
+        let example = ControlExample()
+        example.headerText = "A TextBlock with an offset ToolTip."
+        example.example = textBlock
 
-        exampleStackPanel.children.append(example)
+        exampleStackPanel.children.append(example.view)
     }
 
     // MARK: - Example 3: An Image with a ToolTip using PlacementRect.
@@ -149,14 +141,10 @@ class ToolTipPage: Grid {
 
         _ = try? ToolTipService.setPlacement(image, PlacementMode.bottom)
 
-        let example = ControlExample(
-            headerText: "An Image with a ToolTip using PlacementRect.",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: image,
-            optionsPresenter: StackPanel()
-        ).controlExample
+        let example = ControlExample()
+        example.headerText = "An Image with a ToolTip using PlacementRect."
+        example.example = image
 
-        exampleStackPanel.children.append(example)
+        exampleStackPanel.children.append(example.view)
     }
 }

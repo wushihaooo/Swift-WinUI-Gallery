@@ -118,12 +118,16 @@ class MainWindow: Window, @unchecked Sendable {
         titleBar.name = "TitleBar"
         titleBar.title = "Swift WinUI 3 Gallery"
 
+        // 关闭系统内置 Back 按钮，只保留汉堡按钮
         titleBar.isBackButtonVisible = false
         titleBar.isPaneToggleButtonVisible = true
+
+        // 切换 NavigationView 折叠状态
         titleBar.paneToggleRequested.addHandler { [weak self] _, _ in
             guard let self = self else { return }
-            self.navigationView.isPaneOpen.toggle()
+            self.navigationView.isPaneOpen = !self.navigationView.isPaneOpen
         }
+
         // ---- App 图标 ----
         let appIcon = self.createImage(
             height: 16,
@@ -452,6 +456,17 @@ class MainWindow: Window, @unchecked Sendable {
             return PopupPage()
         case DialogsFlyoutsCategory.teachingTip:
             return TeachingTipPage()
+            
+        case StatusInfoCategory.infoBadge:
+            return InfoBadgePage()
+        case StatusInfoCategory.infoBar:
+            return InfoBarPage()
+        case StatusInfoCategory.progressBar:
+            return ProgressBarPage()
+        case StatusInfoCategory.progressRing:
+            return ProgressRingPage()
+        case StatusInfoCategory.toolTip:
+            return ToolTipPage()
 
         default:
             // 没实现的页面先给个空 Grid，避免崩溃
@@ -637,106 +652,6 @@ class MainWindow: Window, @unchecked Sendable {
             // 更新副标题 + 打开/激活标签页
             self.currentPageTextBlock.text = item.text
             self.openTab(for: item)
-            switch item {
-            case MainCategory.home:
-                rootFrame.content = HomePage()
-            case MainCategory.all:
-                rootFrame.content = AllPage()
-            case CollectionsCategory.listView:
-                rootFrame.content = ListViewPage()
-            case CollectionsCategory.flipView:
-                rootFrame.content = FlipViewPage()
-            case CollectionsCategory.gridView:
-                rootFrame.content = GridViewPage()
-            case CollectionsCategory.listBox:
-                rootFrame.content = ListBoxPage()
-            case CollectionsCategory.pullToRefresh:
-                rootFrame.content = PullToRefreshPage()
-            case CollectionsCategory.treeView:
-                rootFrame.content = TreeViewPage()
-            case ScrollingCategory.annotatedScrollBar:
-                rootFrame.content = AnnotatedScrollBarPage()
-            case ScrollingCategory.pipsPager:
-                rootFrame.content = PipsPagerPage()
-            case ScrollingCategory.scrollView:
-                rootFrame.content = ScrollViewPage()
-            case ScrollingCategory.scrollViewer:
-                rootFrame.content = ScrollViewerPage()
-            case ScrollingCategory.semanticZoom:
-                rootFrame.content = SemanticZoomPage()
-            case LayoutCategory.grid:
-                rootFrame.content = GridPage()
-            case LayoutCategory.border:
-                rootFrame.content = BorderPage()
-            case LayoutCategory.canvas:
-                rootFrame.content = CanvasPage()
-            case LayoutCategory.expander:
-                rootFrame.content = ExpanderPage()
-            case LayoutCategory.radioButtons:
-                rootFrame.content = RadioButtonsPage()
-            case LayoutCategory.relativePanel:
-                rootFrame.content = RelativePanelPage()
-            case LayoutCategory.stackPanel:
-                rootFrame.content = StackPanelPage()
-            case LayoutCategory.variableSizedWrapGrid:
-                rootFrame.content = variableGridPage()
-            case LayoutCategory.viewBox:
-                rootFrame.content = ViewBoxPage()
-            case NavigationViewCategory.breadcrumbBar:
-                rootFrame.content = BreadcrumbBarPage()
-            case NavigationViewCategory.navigationView:
-                rootFrame.content = NavigationViewPage()
-            case NavigationViewCategory.pivot:
-                rootFrame.content = PivotPage()
-            case NavigationViewCategory.selectorBar:
-                rootFrame.content = SelectorBarPage()
-            case NavigationViewCategory.tabView:
-                rootFrame.content = TabViewPage()
-            case MenusToolbarsCategory.appBarButton:
-                rootFrame.content = AppBarButtonPage()
-            case MenusToolbarsCategory.appBarSeparator:
-                rootFrame.content = AppBarSeparatorPage()
-            case MenusToolbarsCategory.appBarToggleButton:
-                rootFrame.content = AppBarToggleButtonPage()
-            case MenusToolbarsCategory.commandBar:
-                rootFrame.content = CommandBarPage()
-            case MenusToolbarsCategory.commandBarFlyout:
-                rootFrame.content = CommandBarFlyoutPage()
-            case MediaCategory.image:
-                rootFrame.content = ImagePage()
-            case MediaCategory.personPicture:
-                rootFrame.content = PersonPicturePage()
-            case MediaCategory.webView2:
-                rootFrame.content = WebView2Page()
-            case WindowingCategory.titleBar:
-                rootFrame.content = TitlebarPage()
-            case SystemCategory.filePicker:
-                rootFrame.content = StoragePickersPage()
-            case SystemCategory.appNotifications:
-                rootFrame.content = AppNotificationsPage()
-            case DialogsFlyoutsCategory.contentDialog:
-                rootFrame.content = ContentDialogPage()
-            case SystemCategory.badgeNotifications: 
-                rootFrame.content = BadgeNotificationsPage()
-            case DialogsFlyoutsCategory.flyout:
-                rootFrame.content = FlyoutPage()
-            case DialogsFlyoutsCategory.popup:
-                rootFrame.content = PopupPage()
-            case DialogsFlyoutsCategory.teachingTip:
-                rootFrame.content = TeachingTipPage()
-            case StatusInfoCategory.infoBadge:
-                rootFrame.content = InfoBadgePage()
-            case StatusInfoCategory.infoBar:
-                rootFrame.content = InfoBarPage()
-            case StatusInfoCategory.progressBar:
-                rootFrame.content = ProgressBarPage()
-            case StatusInfoCategory.progressRing:
-                rootFrame.content = ProgressRingPage()
-            case StatusInfoCategory.toolTip:
-                rootFrame.content = ToolTipPage()
-            default:
-                break
-            }
         default:
             break
         }

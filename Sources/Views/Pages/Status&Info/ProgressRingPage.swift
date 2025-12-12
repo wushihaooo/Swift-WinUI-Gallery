@@ -127,15 +127,12 @@ class ProgressRingPage: Grid {
 
         optionsPanel.children.append(bgCombo)
 
-        let example = ControlExample(
-            headerText: "An indeterminate progress ring.",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: ring,
-            optionsPresenter: optionsPanel
-        ).controlExample
+        let example = ControlExample()
+        example.headerText = "An indeterminate progress ring."
+        example.example = ring
+        example.options = optionsPanel
 
-        exampleStackPanel.children.append(example)
+        exampleStackPanel.children.append(example.view)
     }
 
     // MARK: - 示例 2：确定型 ProgressRing
@@ -282,15 +279,12 @@ class ProgressRingPage: Grid {
 
         optionsPanel.children.append(bgCombo)
 
-        let example = ControlExample(
-            headerText: "A determinate progress ring.",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: leftPanel,
-            optionsPresenter: optionsPanel
-        ).controlExample
+        let example = ControlExample()
+        example.headerText = "A determinate progress ring."
+        example.example = leftPanel
+        example.options = optionsPanel
 
-        exampleStackPanel.children.append(example)
+        exampleStackPanel.children.append(example.view)
     }
 
     // MARK: - 背景颜色辅助

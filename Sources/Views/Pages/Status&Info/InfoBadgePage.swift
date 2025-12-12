@@ -225,15 +225,12 @@ class InfoBadgePage: Grid {
         }
         optionsPanel.children.append(modeCombo)
 
-        let example = ControlExample(
-            headerText: "InfoBadge embedded in NavigationView",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: exampleGrid,
-            optionsPresenter: optionsPanel
-        ).controlExample
+        let example = ControlExample()
+        example.headerText = "InfoBadge embedded in NavigationView"
+        example.example = exampleGrid
+        example.options = optionsPanel
 
-        exampleStackPanel.children.append(example)
+        exampleStackPanel.children.append(example.view)
     }
 
     // MARK: - Example 2: Different InfoBadge Styles
@@ -295,15 +292,12 @@ class InfoBadgePage: Grid {
 
         optionsPanel.children.append(styleCombo)
 
-        let example = ControlExample(
-            headerText: "Different InfoBadge Styles",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: badgesPanel,
-            optionsPresenter: optionsPanel
-        ).controlExample
+        let example = ControlExample()
+        example.headerText = "Different InfoBadge Styles"
+        example.example = badgesPanel
+        example.options = optionsPanel
 
-        exampleStackPanel.children.append(example)
+        exampleStackPanel.children.append(example.view)
     }
 
     /// 用简单的颜色 + 字符模拟 Attention / Informational / Success / Critical 四种样式
@@ -391,14 +385,11 @@ class InfoBadgePage: Grid {
 
         button.content = grid
 
-        let example = ControlExample(
-            headerText: "Placing an InfoBadge inside another control",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: button
-        ).controlExample
+        let example = ControlExample()
+        example.headerText = "Placing an InfoBadge inside another control"
+        example.example = button
 
-        exampleStackPanel.children.append(example)
+        exampleStackPanel.children.append(example.view)
     }
     // MARK: - Example 4: InfoBadge with Dynamic Value
     private func setupExample4_DynamicValue() {
@@ -501,15 +492,12 @@ class InfoBadgePage: Grid {
         optionsPanel.children.append(numberPanel)
 
         // ===== 把左侧 InfoBadge + 右侧 options 打包成示例卡片 =====
-        let example = ControlExample(
-            headerText: "InfoBadge with Dynamic Value",
-            isOutputDisplay: false,
-            isOptionsDisplay: true,
-            contentPresenter: badge,
-            optionsPresenter: optionsPanel
-        ).controlExample
+        let example = ControlExample()
+        example.headerText = "InfoBadge with Dynamic Value"
+        example.example = badge
+        example.options = optionsPanel
 
-        exampleStackPanel.children.append(example)
+        exampleStackPanel.children.append(example.view)
     }
 
 

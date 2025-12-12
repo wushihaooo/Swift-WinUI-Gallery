@@ -1,10 +1,12 @@
 import WinUI
+import UWP
 
 class NumberBoxPage: Page {
     private var pageRootGrid: Grid = Grid()
     private var exampleStackPanel: StackPanel = StackPanel()
     private var headerGrid: Grid = Grid()
     private var bodyScrollViewer: ScrollViewer = ScrollViewer()
+    private var bodyStackPanel: StackPanel = StackPanel()
 
     override init() {
         super.init()
@@ -61,17 +63,30 @@ class NumberBoxPage: Page {
     }
 
     private func setupBody() {
+        // setup component properties
+
+        // bosyScrollViewer
         self.bodyScrollViewer.margin = Thickness(left: 36, top: 0, right: 36, bottom: 0)
         // self.bodyScrollViewer.row = 1
-        let bodyStackPanel = StackPanel()
+
+        // bodyStackPanel
         bodyStackPanel.spacing = 8
         bodyStackPanel.orientation = .vertical
+
         let descText = TextBlock()
         descText.text = """
         Use NumberBox to allow users to enter algebraic equations and numeric input in your app.
         """
         bodyStackPanel.children.append(descText)
 
+        setupSimpleNumBox()
+        setupSpinNumBox()
+        setupFormattedNumBox()
+
+        self.bodyScrollViewer.content = bodyStackPanel
+    }
+
+    private func setupSimpleNumBox() {
         let numberBoxControlExample = ControlExample()
         numberBoxControlExample.headerText = "A NumberBox that evaluates expressions"
         let numBox = NumberBox()
@@ -83,7 +98,9 @@ class NumberBoxPage: Page {
         numBox.width = 200
         numberBoxControlExample.example = numBox
         bodyStackPanel.children.append(numberBoxControlExample.view)
+    }
 
+    private func setupSpinNumBox() {
         let spinNumBoxExample = ControlExample()
         spinNumBoxExample.headerText = "A NumberBox that evaluates expressions"
         let spinNumBox = NumberBox()
@@ -122,8 +139,25 @@ class NumberBoxPage: Page {
 
         spinNumBoxExample.options = spinOptions
         bodyStackPanel.children.append(spinNumBoxExample.view)
+    }
 
+    private func setupFormattedNumBox() {
+        let formattedNumBoxExample = ControlExample()
+        formattedNumBoxExample.headerText = "A formatted NumberBox that rounds to the nearest 0.25"
 
-        self.bodyScrollViewer.content = bodyStackPanel
+        let nb = NumberBox()
+        nb.header = "Enter a dollar amount:"
+        nb.placeholderText = "0.00"
+        let rounder = IncrementNumberRounder()
+        rounder.increment = 0.25
+        rounder.roundingAlgorithm = RoundingAlgorithm.roundHalfUp
+        let formatter = DecimalFormatter()
+        formatter.integerDigits = 1
+        formatter.fractionDigits = 2
+        formatter.numberRounder = rounder
+        nb.numberFormatter = formatter
+        formattedNumBoxExample.example = nb
+
+        bodyStackPanel.children.append(formattedNumBoxExample.view)
     }
 }

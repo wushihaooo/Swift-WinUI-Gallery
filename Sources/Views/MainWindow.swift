@@ -463,6 +463,8 @@ class MainWindow: Window, @unchecked Sendable {
             return NumberBoxPage()
         case TextCategory.passwordBox:
             return PasswordBoxPage()
+        case TextCategory.richEditBox:
+            return RichEditBoxPage()
         case TextCategory.richTextBlock:
             return RichTextBlockPage()
         case TextCategory.textBlock:

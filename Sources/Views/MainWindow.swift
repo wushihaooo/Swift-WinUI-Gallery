@@ -468,6 +468,21 @@ class MainWindow: Window, @unchecked Sendable {
         case StatusInfoCategory.toolTip:
             return ToolTipPage()
 
+        case TextCategory.autoSuggestBox:
+            return AutoSuggestBoxPage()
+        case TextCategory.numberBox:
+            return NumberBoxPage()
+        case TextCategory.passwordBox:
+            return PasswordBoxPage()
+        case TextCategory.richEditBox:
+            return RichEditBoxPage()
+        case TextCategory.richTextBlock:
+            return RichTextBlockPage()
+        case TextCategory.textBlock:
+            return TextBlockPage()
+        case TextCategory.textBox:
+            return TextBoxPage()
+            
         default:
             // 没实现的页面先给个空 Grid，避免崩溃
             return Grid()

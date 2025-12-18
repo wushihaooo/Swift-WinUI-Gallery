@@ -456,7 +456,16 @@ class MainWindow: Window, @unchecked Sendable {
             return PopupPage()
         case DialogsFlyoutsCategory.teachingTip:
             return TeachingTipPage()
-            
+                    
+        case DateTimeCategory.calendarDatePicker:
+            return CalendarDatePickerPage()
+        case DateTimeCategory.calendarView:
+            return CalendarViewPage()
+        case DateTimeCategory.datePicker:
+            return DatePickerPage()
+        case DateTimeCategory.timePicker:
+            return TimePickerPage()
+
         case StatusInfoCategory.infoBadge:
             return InfoBadgePage()
         case StatusInfoCategory.infoBar:
@@ -539,7 +548,7 @@ class MainWindow: Window, @unchecked Sendable {
         AccessibilityCategory.self,
         BasicInputCategory.self,
         CollectionsCategory.self,
-        DataTimeCategory.self,
+        DateTimeCategory.self,
         DialogsFlyoutsCategory.self,
         LayoutCategory.self,
         MediaCategory.self,

@@ -141,7 +141,7 @@ tabView.TabCloseRequested += (sender, args) =>
         border.borderThickness = Thickness(left: 1, top: 1, right: 1, bottom: 1)
         border.borderBrush = SolidColorBrush(Color(a: 255, r: 68, g: 68, b: 68))
         border.background = SolidColorBrush(Color(a: 255, r: 34, g: 34, b: 34))
-        border.padding = Thickness(left: 12, top: 12, right: 12, bottom: 12)
+        border.padding = Thickness(left: 0, top: 0, right: 0, bottom: 0)
 
         let tabView = TabView()
         tabView.tabWidthMode = .sizeToContent
@@ -149,8 +149,9 @@ tabView.TabCloseRequested += (sender, args) =>
         tabView.canReorderTabs = true
         tabView.allowDrop = true
         tabView.minHeight = 320
-        tabView.margin = Thickness(left: -12, top: -12, right: -12, bottom: -12)
-        tabView.padding = Thickness(left: 12, top: 12, right: 12, bottom: 12)
+        tabView.horizontalAlignment = .stretch
+        tabView.margin = Thickness(left: 12, top: 12, right: 12, bottom: 12)
+        tabView.padding = Thickness(left: 0, top: 0, right: 0, bottom: 0)
 
         for index in 0..<3 {
             let tab = createDocumentTab(index: index)
@@ -158,28 +159,87 @@ tabView.TabCloseRequested += (sender, args) =>
         }
         tabView.selectedIndex = 0
 
-        tabView.addTabButtonClick.addHandler { [weak self] sender, _ in
-            guard let tabView = sender else { return }
-            let nextIndex = self?.basicTabCounter ?? Int(tabView.tabItems.count)
-            let newTab = self?.createDocumentTab(index: nextIndex) ?? TabViewItem()
+        tabView.addTabButtonClick.addHandler { [weak self, weak tabView] sender, _ in
+            guard let self, let tabView = tabView ?? sender else { return }
+            let newTab = self.createDocumentTab(index: self.basicTabCounter)
             tabView.tabItems.append(newTab)
             tabView.selectedItem = newTab
-            self?.basicTabCounter = nextIndex + 1
+            self.basicTabCounter += 1
         }
 
-        tabView.tabCloseRequested.addHandler { sender, args in
-            guard let tabView = sender, let closeArgs = args, let tab = closeArgs.tab else { return }
-            // Remove tab from tabItems by finding its index
-            guard let items = tabView.tabItems else { return }
-            var indexToRemove: UInt32?
-            for i in 0..<items.size {
-                if let item = items.getAt(i) as? TabViewItem, item === tab {
-                    indexToRemove = i
-                    break
+        tabView.tabCloseRequested.addHandler { [weak tabView] sender, args in
+            print("🔍 TabCloseRequested event triggered")
+            guard let tabView = tabView ?? sender else {
+                print("❌ Failed to get tabView")
+                return
+            }
+            guard let args = args else {
+                print("❌ args is nil")
+                return
+            }
+            guard let closingTab = args.tab else {
+                print("❌ closingTab is nil")
+                return
+            }
+            guard let items = tabView.tabItems else {
+                print("❌ items is nil")
+                return
+            }
+
+            print("✅ All guards passed")
+            print("📊 Current item count: \(items.size)")
+
+            // Try native vector index lookup (relies on COM identity)
+            var idx: UInt32 = 0
+            if items.indexOf(closingTab, &idx) {
+                print("  ✅ indexOf matched at \(idx)")
+                items.removeAt(idx)
+                print("✅ Item removed via indexOf")
+                print("📊 New item count: \(items.size)")
+                return
+            }
+
+            // Fallback: manual scan comparing headers
+            var indexToRemove: UInt32? = nil
+            let itemCount = Int(items.size)
+            print("🔍 Fallback scan, itemCount = \(itemCount)")
+
+            // Determine closing header string
+            var closingHeader: String? = nil
+            if let headerStr = closingTab.header as? String {
+                closingHeader = headerStr
+            } else if let headerObj = closingTab.header {
+                closingHeader = "\(headerObj)"
+            }
+            print("🏷️ Closing tab header: \(closingHeader ?? "nil")")
+
+            for i in 0..<itemCount {
+                if let item = items.getAt(UInt32(i)) as? TabViewItem {
+                    var itemHeader: String? = nil
+                    if let headerStr = item.header as? String {
+                        itemHeader = headerStr
+                    } else if let headerObj = item.header {
+                        itemHeader = "\(headerObj)"
+                    }
+                    print("  Item \(i): header=\(itemHeader ?? "nil"), isClosable=\(item.isClosable)")
+
+                    if let itemHeader = itemHeader, let closingHeader = closingHeader, itemHeader == closingHeader {
+                        indexToRemove = UInt32(i)
+                        print("  ✅ Found matching item at index \(i)")
+                        break
+                    }
+                } else {
+                    print("  Item \(i): Failed to cast to TabViewItem")
                 }
             }
+
             if let index = indexToRemove {
+                print("🗑️ Removing item at index \(index)")
                 items.removeAt(index)
+                print("✅ Item removed successfully")
+                print("📊 New item count: \(items.size)")
+            } else {
+                print("⚠️ No matching item found to remove")
             }
         }
 
@@ -310,6 +370,11 @@ tabView.TabCloseRequested += (sender, args) =>
     private func createDocumentTab(index: Int) -> TabViewItem {
         let tab = TabViewItem()
         tab.header = "文档 \(index)"
+        tab.isClosable = true
+        // Store a unique identifier as tag - use string format for better compatibility
+        let uniqueId = "doc_\(index)_\(UUID().uuidString)"
+        tab.tag = uniqueId
+        print("📝 Created tab with ID: \(uniqueId)")
 
         let iconSource = FontIconSource()
         iconSource.glyph = "\u{E160}"

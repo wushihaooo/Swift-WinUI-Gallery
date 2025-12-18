@@ -82,10 +82,14 @@ class TreeViewPage: Page {
             treeView.rootNodes.append(treeViewNode)
         }
         grid.children.append(treeView)
-        let Example1 = ControlExample(
-            headerText: "A simple TreeView with drag and drop support",
-            contentPresenter: grid,
-        )
-        self.stackPanel.children.append(Example1.controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "A simple TreeView with drag and drop support" 
+        controlExample.example = grid
+        self.stackPanel.children.append(controlExample.view)
+        // let Example1 = ControlExample(
+        //     headerText: "A simple TreeView with drag and drop support",
+        //     contentPresenter: grid,
+        // )
+        // self.stackPanel.children.append(Example1.controlExample)
     }
 }

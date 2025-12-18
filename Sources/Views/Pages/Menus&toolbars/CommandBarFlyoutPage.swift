@@ -75,12 +75,16 @@ class CommandBarFlyoutPage: Grid {
         example1.children.append(demo)
         
         let _ = exampleStackPanel.children.remove(at: exampleStackPanel.children.index(of: example1)!)
-        exampleStackPanel.children.append(ControlExample(
-            headerText: "CommandBarFlyout for commands on an in-app object",
-            isOutputDisplay: false,
-            isOptionsDisplay: false,
-            contentPresenter: example1
-        ).controlExample)
+        let controlExample = ControlExample()
+        controlExample.headerText = "CommandBarFlyout for commands on an in-app object"
+        controlExample.example = example1
+        exampleStackPanel.children.append(controlExample.view)
+        // exampleStackPanel.children.append(ControlExample(
+        //     headerText: "CommandBarFlyout for commands on an in-app object",
+        //     isOutputDisplay: false,
+        //     isOptionsDisplay: false,
+        //     contentPresenter: example1
+        // ).controlExample)
     }
     
     private func createCommandBarFlyoutDemo() -> StackPanel {

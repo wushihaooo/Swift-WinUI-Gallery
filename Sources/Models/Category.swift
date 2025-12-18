@@ -110,7 +110,7 @@ enum MainCategory: String, Category {
         case .collections:
             return CollectionsCategory.allCases
         case .dataTime:
-            return DataTimeCategory.allCases
+            return DateTimeCategory.allCases
         case .dialogsFlyouts:
             return DialogsFlyoutsCategory.allCases
         case .layout:
@@ -173,7 +173,7 @@ enum CollectionsCategory: String, Category {
 }
 
 
-enum DataTimeCategory: String, Category {
+enum DateTimeCategory: String, Category {
     case calendarDatePicker, calendarView, datePicker, timePicker
     var text: String { 
         debugPrint("[DEBUG--MainWindow] rawValue: \(self.rawValue) \(type(of: self.rawValue))")

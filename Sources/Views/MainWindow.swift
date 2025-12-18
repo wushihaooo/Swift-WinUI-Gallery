@@ -456,7 +456,16 @@ class MainWindow: Window, @unchecked Sendable {
             return PopupPage()
         case DialogsFlyoutsCategory.teachingTip:
             return TeachingTipPage()
-            
+                    
+        case DateTimeCategory.calendarDatePicker:
+            return CalendarDatePickerPage()
+        case DateTimeCategory.calendarView:
+            return CalendarViewPage()
+        case DateTimeCategory.datePicker:
+            return DatePickerPage()
+        case DateTimeCategory.timePicker:
+            return TimePickerPage()
+
         case StatusInfoCategory.infoBadge:
             return InfoBadgePage()
         case StatusInfoCategory.infoBar:
@@ -468,6 +477,21 @@ class MainWindow: Window, @unchecked Sendable {
         case StatusInfoCategory.toolTip:
             return ToolTipPage()
 
+        case TextCategory.autoSuggestBox:
+            return AutoSuggestBoxPage()
+        case TextCategory.numberBox:
+            return NumberBoxPage()
+        case TextCategory.passwordBox:
+            return PasswordBoxPage()
+        case TextCategory.richEditBox:
+            return RichEditBoxPage()
+        case TextCategory.richTextBlock:
+            return RichTextBlockPage()
+        case TextCategory.textBlock:
+            return TextBlockPage()
+        case TextCategory.textBox:
+            return TextBoxPage()
+            
         default:
             // 没实现的页面先给个空 Grid，避免崩溃
             return Grid()
@@ -524,7 +548,7 @@ class MainWindow: Window, @unchecked Sendable {
         AccessibilityCategory.self,
         BasicInputCategory.self,
         CollectionsCategory.self,
-        DataTimeCategory.self,
+        DateTimeCategory.self,
         DialogsFlyoutsCategory.self,
         LayoutCategory.self,
         MediaCategory.self,

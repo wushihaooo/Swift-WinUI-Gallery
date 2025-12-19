@@ -151,7 +151,7 @@ enum MainCategory: String, Category {
 }
 
 enum FundamentalsCategory: String, Category {
-    case resources, styles, binding, templates, customUserControls, scratchPad
+    case resources, style, binding, templates, customUserControls, scratchPad
 }
 
 enum DesignCategory: String , Category {
@@ -223,7 +223,7 @@ enum StatusInfoCategory: String, Category {
 }
 
 enum StylesCategory: String, Category {
-    case AcrylicBrush, animatedIcon, compactSizing, iconElement, ling, shape, radialGradientBrush
+    case AcrylicBrush, animatedIcon, compactSizing, iconElement, line, shape, radialGradientBrush
     case systemBackdropsMicaAcrylic, themeShadow
 }
 

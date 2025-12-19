@@ -7,25 +7,26 @@ import WinUI
 class MainWindow: Window, @unchecked Sendable {
     // MARK: - Properties
 
-    // ViewModel
     private let viewModel: MainWindowViewModel
-    // UI
+
     private var rootGrid: Grid
     private var titleBar: TitleBar
     private var navigationView: NavigationView
-    private var tabView: TabView                  // ✅ 使用 TabView 作为内容区域
-    private var controlsSearchBox: AutoSuggestBox // 搜索功能
-    private var currentPageTextBlock: TextBlock   // 动态显示
+    private var tabView: TabView
+    private var controlsSearchBox: AutoSuggestBox
+    private var currentPageTextBlock: TextBlock
+
     private var forwardStack: [any Category] = []
     private var forwardButton: Button
     private var backButton: Button
     private var stack: [any Category] = []
 
+    /// ✅ 由 NavigationViewItem.pointerPressed 捕获 Ctrl 状态
+    private var openInNewTabRequested: Bool = false
+
     // MARK: - Initialization
     override init() {
-        // 初始化 ViewModel
         self.viewModel = MainWindowViewModel()
-        // 初始化 UI 元素
         self.rootGrid = Grid()
         self.navigationView = NavigationView()
         self.tabView = TabView()
@@ -46,44 +47,38 @@ class MainWindow: Window, @unchecked Sendable {
 
     func setupUI() {
         self.title = "Swift WinUI3 Gallery"
-        self.systemBackdrop = MicaBackdrop()
         self.extendsContentIntoTitleBar = true
 
         let micaBackdrop = MicaBackdrop()
         micaBackdrop.kind = .base
         self.systemBackdrop = micaBackdrop
 
-        // windows taskbar icon
         if let appWindow = self.appWindow {
             if let iconPath = Bundle.module.path(
                 forResource: "GalleryIcon",
                 ofType: "ico",
                 inDirectory: "Assets/Tiles"
             ) {
-                do {
-                    try appWindow.setIcon(iconPath)
-                } catch {
-                    debugPrint("Failed to set appWindow icon: \(error)")
-                }
+                do { try appWindow.setIcon(iconPath) }
+                catch { debugPrint("Failed to set appWindow icon: \(error)") }
             }
         }
 
-        self.setupRootGrid()
-        self.setupTitleBar()
-        self.setupNavigationView()
+        setupRootGrid()
+        setupTitleBar()
+        setupNavigationView()
     }
 
     private func setupRootGrid() {
-        self.rootGrid.name = "RootGrid"
+        rootGrid.name = "RootGrid"
 
-        // RowDefinitions
-        let rowDefinition1 = RowDefinition()
-        rowDefinition1.height = GridLength(value: 1, gridUnitType: .auto)
-        rootGrid.rowDefinitions.append(rowDefinition1)
+        let row1 = RowDefinition()
+        row1.height = GridLength(value: 1, gridUnitType: .auto)
+        rootGrid.rowDefinitions.append(row1)
 
-        let rowDefinition2 = RowDefinition()
-        rowDefinition2.height = GridLength(value: 1, gridUnitType: .star)
-        rootGrid.rowDefinitions.append(rowDefinition2)
+        let row2 = RowDefinition()
+        row2.height = GridLength(value: 1, gridUnitType: .star)
+        rootGrid.rowDefinitions.append(row2)
     }
 
     private func createImage(
@@ -103,14 +98,11 @@ class MainWindow: Window, @unchecked Sendable {
         )
         image.stretch = .uniform
 
-        if imagePath.isEmpty {
-            fatalError("imagePath is empty!")
-        }
+        if imagePath.isEmpty { fatalError("imagePath is empty!") }
         let uri = Uri(imagePath)
         let bitmapImage = BitmapImage()
         bitmapImage.uriSource = uri
         image.source = bitmapImage
-
         return image
     }
 
@@ -118,18 +110,15 @@ class MainWindow: Window, @unchecked Sendable {
         titleBar.name = "TitleBar"
         titleBar.title = "Swift WinUI 3 Gallery"
 
-        // 关闭系统内置 Back 按钮，只保留汉堡按钮
         titleBar.isBackButtonVisible = false
         titleBar.isPaneToggleButtonVisible = true
 
-        // 切换 NavigationView 折叠状态
         titleBar.paneToggleRequested.addHandler { [weak self] _, _ in
             guard let self = self else { return }
-            self.navigationView.isPaneOpen = !self.navigationView.isPaneOpen
+            self.navigationView.isPaneOpen.toggle()
         }
 
-        // ---- App 图标 ----
-        let appIcon = self.createImage(
+        let appIcon = createImage(
             height: 16,
             width: 16,
             imagePath: Bundle.module.path(
@@ -140,79 +129,94 @@ class MainWindow: Window, @unchecked Sendable {
             imageThickness: [8, 0, 8, 0]
         )
 
-        // ---- 主标题 ----
         let titleText = TextBlock()
         titleText.text = "Swift WinUI 3 Gallery"
         titleText.fontSize = 14
         titleText.verticalAlignment = .center
 
-        // ---- 副标题：显示当前 Page 的标题 ----
         currentPageTextBlock.fontSize = 12
         currentPageTextBlock.opacity = 0.75
         currentPageTextBlock.verticalAlignment = .center
         currentPageTextBlock.margin = Thickness(left: 8, top: 0, right: 16, bottom: 0)
         currentPageTextBlock.text = ""
 
-        // ---- Back / Forward 按钮 ----
         let backText = TextBlock()
         backText.text = "←"
         backText.verticalAlignment = .center
-
         backButton.content = backText
         backButton.verticalAlignment = .center
         backButton.margin = Thickness(left: 0, top: 0, right: 4, bottom: 0)
         backButton.isEnabled = false
-        backButton.click.addHandler { [weak self] _, _ in
-            self?.navigateBack()
-        }
+        backButton.click.addHandler { [weak self] _, _ in self?.navigateBack() }
 
         let forwardText = TextBlock()
         forwardText.text = "→"
         forwardText.verticalAlignment = .center
-
         forwardButton.content = forwardText
         forwardButton.verticalAlignment = .center
         forwardButton.margin = Thickness(left: 0, top: 0, right: 12, bottom: 0)
         forwardButton.isEnabled = false
-        forwardButton.click.addHandler { [weak self] _, _ in
-            self?.navigateForward()
-        }
+        forwardButton.click.addHandler { [weak self] _, _ in self?.navigateForward() }
 
-        // ---- Search 框 ----
         controlsSearchBox.name = "controlsSearchBox"
         controlsSearchBox.placeholderText = "Search controls and samples..."
         controlsSearchBox.verticalAlignment = .center
         controlsSearchBox.minWidth = 320
 
-        // ---- 中间整体一条横向布局：Icon → Title → Subtitle → Back/Forward → Search ----
-        let centerStack = StackPanel()
-        centerStack.orientation = .horizontal
-        centerStack.verticalAlignment = .center
-        centerStack.spacing = 0
+        // ✅ 用 Grid 做一个“可拖动的空白区域”，保证一定能拖动窗口
+        let titleBarGrid = Grid()
+        let c0 = ColumnDefinition(); c0.width = GridLength(value: 1, gridUnitType: .auto)
+        let c1 = ColumnDefinition(); c1.width = GridLength(value: 1, gridUnitType: .auto)
+        let c2 = ColumnDefinition(); c2.width = GridLength(value: 1, gridUnitType: .auto)
+        let c3 = ColumnDefinition(); c3.width = GridLength(value: 1, gridUnitType: .auto)
+        let c4 = ColumnDefinition(); c4.width = GridLength(value: 1, gridUnitType: .star) // <- drag 区
+        let c5 = ColumnDefinition(); c5.width = GridLength(value: 1, gridUnitType: .auto)
 
-        centerStack.children.append(appIcon)
-        centerStack.children.append(titleText)
-        centerStack.children.append(currentPageTextBlock)
-        centerStack.children.append(backButton)
-        centerStack.children.append(forwardButton)
-        centerStack.children.append(controlsSearchBox)
+        titleBarGrid.columnDefinitions.append(c0)
+        titleBarGrid.columnDefinitions.append(c1)
+        titleBarGrid.columnDefinitions.append(c2)
+        titleBarGrid.columnDefinitions.append(c3)
+        titleBarGrid.columnDefinitions.append(c4)
+        titleBarGrid.columnDefinitions.append(c5)
 
-        titleBar.content = centerStack
+        let navButtonsStack = StackPanel()
+        navButtonsStack.orientation = .horizontal
+        navButtonsStack.verticalAlignment = .center
+        navButtonsStack.children.append(backButton)
+        navButtonsStack.children.append(forwardButton)
 
-        // ---- 右侧头像 ----
+        let dragRegion = Border()
+        // ✅ 背景必须“可命中”，否则空白区域可能收不到指针事件
+        dragRegion.background = SolidColorBrush(Color(a: 0, r: 0, g: 0, b: 0))
+        dragRegion.verticalAlignment = .stretch
+        dragRegion.horizontalAlignment = .stretch
+
+        titleBarGrid.children.append(appIcon)
+        try? Grid.setColumn(appIcon, 0)
+
+        titleBarGrid.children.append(titleText)
+        try? Grid.setColumn(titleText, 1)
+
+        titleBarGrid.children.append(currentPageTextBlock)
+        try? Grid.setColumn(currentPageTextBlock, 2)
+
+        titleBarGrid.children.append(navButtonsStack)
+        try? Grid.setColumn(navButtonsStack, 3)
+
+        titleBarGrid.children.append(dragRegion)
+        try? Grid.setColumn(dragRegion, 4)
+
+        titleBarGrid.children.append(controlsSearchBox)
+        try? Grid.setColumn(controlsSearchBox, 5)
+
+        titleBar.content = titleBarGrid
+
         let avatar = Border()
         avatar.width = 32
         avatar.height = 32
-        avatar.cornerRadius = CornerRadius(
-            topLeft: 16,
-            topRight: 16,
-            bottomRight: 16,
-            bottomLeft: 16
-        )
+        avatar.cornerRadius = CornerRadius(topLeft: 16, topRight: 16, bottomRight: 16, bottomLeft: 16)
         avatar.verticalAlignment = .center
-        avatar.background = SolidColorBrush(
-            Color(a: 255, r: 240, g: 240, b: 240)
-        )
+        avatar.background = SolidColorBrush(Color(a: 255, r: 240, g: 240, b: 240))
 
         let avatarText = TextBlock()
         avatarText.text = "PP"
@@ -223,142 +227,188 @@ class MainWindow: Window, @unchecked Sendable {
 
         titleBar.rightHeader = avatar
 
-        self.rootGrid.children.append(titleBar)
+        rootGrid.children.append(titleBar)
         try? Grid.setRow(titleBar, 0)
+
+        // ✅ 关键修复：启动时就指定可拖动标题栏区域，否则初始会完全拖不动
+        //   （如果你的 Swift WinUI wrapper 这里是 throws，就用 try?）
+        try? self.setTitleBar(titleBar)
+    }
+
+    // MARK: - Ctrl 检测（不依赖 WindowsSystem）
+
+    /// ✅ Control 在 VirtualKeyModifiers 里一般是 bit 0x1
+    private func updateCtrlFlagFromPointer(_ args: PointerRoutedEventArgs?) {
+        guard let args = args else { return }
+        let raw = Int(args.keyModifiers.rawValue)
+        openInNewTabRequested = (raw & 0x1) != 0
     }
 
     // MARK: - NavigationView + TabView
 
     private func setupSubCategories(category: any Category, navigationViewItem: NavigationViewItem) {
         if category.subCategories.isEmpty { return }
+
         for subCategory: any Category in category.subCategories {
-            let subCategoryItem = NavigationViewItem()
-            subCategoryItem.tag = Uri("xca://\(subCategory.rawValue)")
-            subCategoryItem.content = subCategory.text
-            navigationViewItem.menuItems.append(subCategoryItem)
+            let subItem = NavigationViewItem()
+            subItem.tag = Uri("xca://\(subCategory.rawValue)")
+            subItem.content = subCategory.text
+
+            // ✅ 关键：在 Item 上抓 Ctrl 状态
+            subItem.pointerPressed.addHandler { [weak self] _, args in
+                self?.updateCtrlFlagFromPointer(args)
+            }
+
+            navigationViewItem.menuItems.append(subItem)
         }
     }
 
     private func setupNavigationView() {
-        self.navigationView.paneDisplayMode = .auto
-        self.navigationView.isSettingsVisible = true
-        self.navigationView.openPaneLength = 320
-        self.navigationView.isBackButtonVisible = .collapsed
-        self.navigationView.isPaneToggleButtonVisible = false
+        navigationView.paneDisplayMode = .auto
+        navigationView.isSettingsVisible = true
+        navigationView.openPaneLength = 320
+        navigationView.isBackButtonVisible = .collapsed
+        navigationView.isPaneToggleButtonVisible = false
 
         MainCategory.allCases.forEach { c in
-            let navigationViewItem = NavigationViewItem()
-            navigationViewItem.tag = Uri("xca://\(c.rawValue)")
+            let item = NavigationViewItem()
+            item.tag = Uri("xca://\(c.rawValue)")
+
             let icon = FontIcon()
             icon.glyph = c.glyph
-            navigationViewItem.icon = icon
-            navigationViewItem.content = c.text
-            setupSubCategories(category: c, navigationViewItem: navigationViewItem)
-            navigationView.menuItems.append(navigationViewItem)
+            item.icon = icon
+            item.content = c.text
+
+            // ✅ 关键：在 Item 上抓 Ctrl 状态
+            item.pointerPressed.addHandler { [weak self] _, args in
+                self?.updateCtrlFlagFromPointer(args)
+            }
+
+            setupSubCategories(category: c, navigationViewItem: item)
+            navigationView.menuItems.append(item)
         }
 
-        // 默认选中第一个
-        self.navigationView.selectedItem = navigationView.menuItems[0]
+        navigationView.selectedItem = navigationView.menuItems[0]
 
-        // ---- TabView 配置 ----
         tabView.tabWidthMode = .sizeToContent
         tabView.isAddTabButtonVisible = false
         tabView.canReorderTabs = true
         tabView.allowDrop = true
 
-        // 关闭标签事件（按 TabViewPage 的思路）
-        tabView.tabCloseRequested.addHandler { [weak tabView] sender, args in
-            print("🔍 MainWindow TabCloseRequested event triggered")
+        ensureAtLeastOneTab()
 
-            guard let tabView = tabView ?? sender else {
-                print("❌ Failed to get tabView")
-                return
-            }
-            guard let args = args else {
-                print("❌ args is nil")
-                return
-            }
-            guard let closingTab = args.tab else {
-                print("❌ closingTab is nil")
-                return
-            }
-            guard let items = tabView.tabItems else {
-                print("❌ items is nil")
-                return
-            }
+        tabView.tabCloseRequested.addHandler { [weak self, weak tabView] sender, args in
+            guard let self = self else { return }
+            guard let tabView = tabView ?? sender else { return }
+            guard let args = args else { return }
+            guard let closingTab = args.tab else { return }
+            guard let items = tabView.tabItems else { return }
 
-            print("✅ All guards passed")
-            print("📊 Current item count: \(items.size)")
-
-            // 1️⃣ 尝试用 indexOf
             var idx: UInt32 = 0
             if items.indexOf(closingTab, &idx) {
-                print("  ✅ indexOf matched at \(idx)")
                 items.removeAt(idx)
-                print("✅ Item removed via indexOf")
-                print("📊 New item count: \(items.size)")
-                return
             }
 
-            // 2️⃣ Fallback：按 header 文本匹配
-            var indexToRemove: UInt32? = nil
-            let itemCount = Int(items.size)
-            print("🔍 Fallback scan, itemCount = \(itemCount)")
+            self.ensureAtLeastOneTab()
+        }
 
-            var closingHeader: String? = nil
-            if let headerStr = closingTab.header as? String {
-                closingHeader = headerStr
-            } else if let headerObj = closingTab.header {
-                closingHeader = "\(headerObj)"
-            }
-            print("🏷️ Closing tab header: \(closingHeader ?? "nil")")
-
-            for i in 0..<itemCount {
-                if let item = items.getAt(UInt32(i)) as? TabViewItem {
-                    var itemHeader: String? = nil
-                    if let headerStr = item.header as? String {
-                        itemHeader = headerStr
-                    } else if let headerObj = item.header {
-                        itemHeader = "\(headerObj)"
-                    }
-
-                    print("  Item \(i): header=\(itemHeader ?? "nil"), isClosable=\(item.isClosable)")
-
-                    if let itemHeader,
-                       let closingHeader,
-                       itemHeader == closingHeader {
-                        indexToRemove = UInt32(i)
-                        print("  ✅ Found matching item at index \(i)")
-                        break
-                    }
-                } else {
-                    print("  Item \(i): Failed to cast to TabViewItem")
-                }
-            }
-
-            if let index = indexToRemove {
-                print("🗑️ Removing item at index \(index)")
-                items.removeAt(index)
-                print("✅ Item removed successfully")
-                print("📊 New item count: \(items.size)")
-            } else {
-                print("⚠️ No matching item found to remove")
+        tabView.selectionChanged.addHandler { [weak self] _, _ in
+            guard let self = self else { return }
+            guard let tab = self.tabView.selectedItem as? TabViewItem else { return }
+            if let raw = tab.tag as? String, let cat = self.findCategory(byRawValue: raw) {
+                self.currentPageTextBlock.text = cat.text
+                self.selectNavigationItem(for: cat)
             }
         }
 
-        self.navigationView.content = tabView
-        rootGrid.children.append(self.navigationView)
-        try? Grid.setRow(self.navigationView, 1)
+        navigationView.content = tabView
+        rootGrid.children.append(navigationView)
+        try? Grid.setRow(navigationView, 1)
     }
 
-    // MARK: - Tab 辅助函数
+    // MARK: - Frame 方案（修复“标题变了页面不变”）
 
-    /// Tab 上显示关闭按钮
-    private func attachCloseHandler(for tab: TabViewItem) {
+    private func getOrCreateFrame(in tab: TabViewItem) -> Frame {
+        if let frame = tab.content as? Frame { return frame }
+        let frame = Frame()
+        tab.content = frame
+        return frame
+    }
+
+    private func ensureAtLeastOneTab() {
+        guard let items = tabView.tabItems else { return }
+
+        if items.size == 0 {
+            let home = MainCategory.home
+            let tab = TabViewItem()
+            tab.header = home.text
+            tab.tag = home.rawValue
+
+            let iconSource = FontIconSource()
+            iconSource.glyph = home.glyph
+            tab.iconSource = iconSource
+
+            let frame = Frame()
+            frame.content = createPage(for: home)
+            tab.content = frame
+
+            tab.isClosable = true
+
+            tabView.tabItems.append(tab)
+            tabView.selectedItem = tab
+            currentPageTextBlock.text = home.text
+        } else if tabView.selectedItem == nil {
+            if let first = items.getAt(0) as? TabViewItem {
+                tabView.selectedItem = first
+            }
+        }
+    }
+
+    private func showInCurrentTab(_ category: any Category) {
+        ensureAtLeastOneTab()
+        guard let tab = tabView.selectedItem as? TabViewItem else { return }
+
+        tab.header = category.text
+        tab.tag = category.rawValue
+
+        if let main = category as? MainCategory {
+            let iconSource = FontIconSource()
+            iconSource.glyph = main.glyph
+            tab.iconSource = iconSource
+        } else {
+            tab.iconSource = nil
+        }
+
+        let frame = getOrCreateFrame(in: tab)
+        frame.content = createPage(for: category)
+
+        currentPageTextBlock.text = category.text
+    }
+
+    private func openNewTab(for category: any Category) {
+        let tab = TabViewItem()
+        tab.header = category.text
+        tab.tag = category.rawValue
+
+        if let main = category as? MainCategory {
+            let iconSource = FontIconSource()
+            iconSource.glyph = main.glyph
+            tab.iconSource = iconSource
+        }
+
+        let frame = Frame()
+        frame.content = createPage(for: category)
+        tab.content = frame
+
         tab.isClosable = true
+
+        tabView.tabItems.append(tab)
+        tabView.selectedItem = tab
+        currentPageTextBlock.text = category.text
     }
 
-    /// 根据 Category 生成页面
+    // MARK: - 页面创建（保持你原来的 switch）
+
     private func createPage(for category: any Category) -> UIElement {
         switch category {
         case MainCategory.home:
@@ -456,7 +506,7 @@ class MainWindow: Window, @unchecked Sendable {
             return PopupPage()
         case DialogsFlyoutsCategory.teachingTip:
             return TeachingTipPage()
-                    
+
         case DateTimeCategory.calendarDatePicker:
             return CalendarDatePickerPage()
         case DateTimeCategory.calendarView:
@@ -491,56 +541,14 @@ class MainWindow: Window, @unchecked Sendable {
             return TextBlockPage()
         case TextCategory.textBox:
             return TextBoxPage()
-            
+
         default:
-            // 没实现的页面先给个空 Grid，避免崩溃
             return Grid()
         }
     }
 
-    /// 打开/激活某个 Category 对应的标签页
-    private func openTab(for category: any Category) {
-        let raw = category.rawValue
-        let headerText = category.text
-
-        // 如果已有同 rawValue 的 Tab，则只选中
-        if let items = tabView.tabItems {
-            let count = Int(items.size)
-            for i in 0..<count {
-                if let item = items.getAt(UInt32(i)) as? TabViewItem,
-                   let tag = item.tag as? String,
-                   tag == raw {
-                    tabView.selectedItem = item
-                    self.currentPageTextBlock.text = headerText
-                    return
-                }
-            }
-        }
-
-        // 否则创建新 Tab
-        let tab = TabViewItem()
-        tab.header = headerText
-        tab.tag = raw
-
-        // 如果是主分类，给个图标
-        if let main = category as? MainCategory {
-            let iconSource = FontIconSource()
-            iconSource.glyph = main.glyph
-            tab.iconSource = iconSource
-        }
-
-        tab.content = createPage(for: category)
-
-        attachCloseHandler(for: tab)
-
-        tabView.tabItems.append(tab)
-        tabView.selectedItem = tab
-        self.currentPageTextBlock.text = headerText
-    }
-
     // MARK: - Category 查找
 
-    // 所有 Category 类型的注册表
     private nonisolated(unsafe) static let categoryTypes: [any (RawRepresentable & Category).Type] = [
         MainCategory.self,
         FundamentalsCategory.self,
@@ -572,6 +580,29 @@ class MainWindow: Window, @unchecked Sendable {
         return nil
     }
 
+    // MARK: - 同步左侧选中
+
+    private func selectNavigationItem(for category: any Category) {
+        let raw = category.rawValue
+
+        for anyItem in navigationView.menuItems {
+            guard let item = anyItem as? NavigationViewItem else { continue }
+
+            if let tag = (item.tag as? Uri)?.host, tag == raw {
+                navigationView.selectedItem = item
+                return
+            }
+
+            for anySub in item.menuItems {
+                guard let sub = anySub as? NavigationViewItem else { continue }
+                if let tag = (sub.tag as? Uri)?.host, tag == raw {
+                    navigationView.selectedItem = sub
+                    return
+                }
+            }
+        }
+    }
+
     // MARK: - 导航历史（Back/Forward）
 
     private func updateNavButtonsState() {
@@ -579,103 +610,101 @@ class MainWindow: Window, @unchecked Sendable {
         forwardButton.isEnabled = !forwardStack.isEmpty
     }
 
+    // ✅ 关键修复：启动时把初始页压栈，避免“第一次不能回退”
+    private func seedInitialHistoryIfNeeded() {
+        if stack.isEmpty {
+            let initial = viewModel.selectedCategory
+            stack = [initial]
+            forwardStack.removeAll()
+            updateNavButtonsState()
+        }
+    }
+
     private func navigateBack() {
         guard stack.count > 1 else { return }
-
         let current = stack.removeLast()
         forwardStack.append(current)
 
         let previous = stack.last ?? MainCategory.home
         viewModel.navigateCommand.execute(parameter: previous)
-
         updateNavButtonsState()
     }
 
     private func navigateForward() {
         guard let next = forwardStack.popLast() else { return }
-
         stack.append(next)
         viewModel.navigateCommand.execute(parameter: next)
-
         updateNavButtonsState()
     }
 
-    private func navigate() {
-        guard
-            let item = self.navigationView.selectedItem as? NavigationViewItem,
-            let tag = (item.tag as? Uri)?.host,
-            let category = self.findCategory(byRawValue: tag)
-        else { return }
-
-        if !category.canSelect { return }
-        stack.append(category)
-        self.viewModel.navigateCommand.execute(parameter: category)
-    }
-
-    // MARK: - ViewModel 绑定
+    // MARK: - ViewModel 绑定（用 itemInvoked 做导航）
 
     func bindViewModel() {
-        // NavigationView 切换 View 事件
-        navigationView.selectionChanged.addHandler { [unowned self] _, _ in
-            guard
-                let item = self.navigationView.selectedItem as? NavigationViewItem,
-                let tag = (item.tag as? Uri)?.host,
-                let category = self.findCategory(byRawValue: tag)
-            else { return }
+        navigationView.itemInvoked.addHandler { [unowned self] _, args in
+            guard let args = args else { self.openInNewTabRequested = false; return }
+            guard let container = args.invokedItemContainer as? NavigationViewItem else { self.openInNewTabRequested = false; return }
+            guard let tag = (container.tag as? Uri)?.host else { self.openInNewTabRequested = false; return }
+            guard let category = self.findCategory(byRawValue: tag) else { self.openInNewTabRequested = false; return }
+            if !category.canSelect { self.openInNewTabRequested = false; return }
 
-            if !category.canSelect { return }
+            // ✅ 避免重复 push 同一个页面，导致栈异常增长
+            if self.stack.last?.rawValue != category.rawValue {
+                self.forwardStack.removeAll()
+                self.stack.append(category)
+            } else {
+                // 同页重复点击：不新增历史，但 forward 仍然应当清空（和浏览器行为一致）
+                self.forwardStack.removeAll()
+            }
 
-            // 用户主动点菜单：清空“前进”历史
-            self.forwardStack.removeAll()
-
-            self.stack.append(category)
             self.viewModel.navigateCommand.execute(parameter: category)
-
             self.updateNavButtonsState()
         }
 
-        // 默认选中第一个菜单项
         if let firstItem = navigationView.menuItems.first {
             navigationView.selectedItem = firstItem
         }
 
-        // ViewModel 属性变化
         viewModel.propertyChanged = { [unowned self] propertyName in
             self.handlePropertyChanged(propertyName)
         }
 
-        // 导航位置变化（左侧 / 顶部）
         NotificationCenter.default.addObserver(
             forName: NSNotification.Name("NaviPositionChanged"),
             object: nil,
             queue: .main
         ) { [weak self] notification in
-            print("[MainWindow.swift--DEBUG] NaviPositionChanged: \(notification.object as? Int)")
             guard let self = self, let index = notification.object as? Int else { return }
-            print("[MainWindow.swift--DEBUG] NaviPositionChanged: \(index)")
             switch index {
-            case 0: // Left
-                print("Left")
-                self.navigationView.paneDisplayMode = .left
-            case 1: // Top
-                print("Top")
-                self.navigationView.paneDisplayMode = .top
-            default:
-                break
+            case 0: self.navigationView.paneDisplayMode = .left
+            case 1: self.navigationView.paneDisplayMode = .top
+            default: break
             }
         }
 
-        // 初始更新
+        // ✅ 先渲染初始页
         handlePropertyChanged("selectedCategory")
+
+        // ✅ 再把初始页压入历史栈，解决“第一次不能回退”
+        seedInitialHistoryIfNeeded()
     }
 
     private func handlePropertyChanged(_ propertyName: String) {
         switch propertyName {
         case "selectedCategory":
             let item: any Category = viewModel.selectedCategory
-            // 更新副标题 + 打开/激活标签页
-            self.currentPageTextBlock.text = item.text
-            self.openTab(for: item)
+            currentPageTextBlock.text = item.text
+
+            if openInNewTabRequested {
+                openNewTab(for: item)
+            } else {
+                showInCurrentTab(item)
+            }
+
+            // ✅ 用完就复位，避免影响下一次点击
+            openInNewTabRequested = false
+
+            selectNavigationItem(for: item)
+
         default:
             break
         }

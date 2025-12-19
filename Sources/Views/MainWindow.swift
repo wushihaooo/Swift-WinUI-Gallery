@@ -13,6 +13,12 @@ class MainWindow: Window, @unchecked Sendable {
     private var titleBar: TitleBar
     private var navigationView: NavigationView
     private var tabView: TabView
+
+    // ✅ 单 tab 模式显示用（不做 UIElement 搬家，只显示“新实例页面”）
+    private var singleFrameHost: Frame
+    private var contentHost: Grid
+    private var isSingleTabMode: Bool = false
+
     private var controlsSearchBox: AutoSuggestBox
     private var currentPageTextBlock: TextBlock
 
@@ -35,6 +41,9 @@ class MainWindow: Window, @unchecked Sendable {
         self.currentPageTextBlock = TextBlock()
         self.backButton = Button()
         self.forwardButton = Button()
+
+        self.singleFrameHost = Frame()
+        self.contentHost = Grid()
 
         super.init()
         self.content = self.rootGrid
@@ -163,13 +172,13 @@ class MainWindow: Window, @unchecked Sendable {
         controlsSearchBox.verticalAlignment = .center
         controlsSearchBox.minWidth = 320
 
-        // ✅ 用 Grid 做一个“可拖动的空白区域”，保证一定能拖动窗口
+        // ✅ 放一个“真正可拖拽的空白区”，避免控件把拖拽吃掉
         let titleBarGrid = Grid()
         let c0 = ColumnDefinition(); c0.width = GridLength(value: 1, gridUnitType: .auto)
         let c1 = ColumnDefinition(); c1.width = GridLength(value: 1, gridUnitType: .auto)
         let c2 = ColumnDefinition(); c2.width = GridLength(value: 1, gridUnitType: .auto)
         let c3 = ColumnDefinition(); c3.width = GridLength(value: 1, gridUnitType: .auto)
-        let c4 = ColumnDefinition(); c4.width = GridLength(value: 1, gridUnitType: .star) // <- drag 区
+        let c4 = ColumnDefinition(); c4.width = GridLength(value: 1, gridUnitType: .star) // drag region
         let c5 = ColumnDefinition(); c5.width = GridLength(value: 1, gridUnitType: .auto)
 
         titleBarGrid.columnDefinitions.append(c0)
@@ -186,7 +195,6 @@ class MainWindow: Window, @unchecked Sendable {
         navButtonsStack.children.append(forwardButton)
 
         let dragRegion = Border()
-        // ✅ 背景必须“可命中”，否则空白区域可能收不到指针事件
         dragRegion.background = SolidColorBrush(Color(a: 0, r: 0, g: 0, b: 0))
         dragRegion.verticalAlignment = .stretch
         dragRegion.horizontalAlignment = .stretch
@@ -230,14 +238,12 @@ class MainWindow: Window, @unchecked Sendable {
         rootGrid.children.append(titleBar)
         try? Grid.setRow(titleBar, 0)
 
-        // ✅ 关键修复：启动时就指定可拖动标题栏区域，否则初始会完全拖不动
-        //   （如果你的 Swift WinUI wrapper 这里是 throws，就用 try?）
+        // ✅ 关键：启动就 SetTitleBar，否则一开始可能拖不动
         try? self.setTitleBar(titleBar)
     }
 
-    // MARK: - Ctrl 检测（不依赖 WindowsSystem）
+    // MARK: - Ctrl 检测
 
-    /// ✅ Control 在 VirtualKeyModifiers 里一般是 bit 0x1
     private func updateCtrlFlagFromPointer(_ args: PointerRoutedEventArgs?) {
         guard let args = args else { return }
         let raw = Int(args.keyModifiers.rawValue)
@@ -254,7 +260,6 @@ class MainWindow: Window, @unchecked Sendable {
             subItem.tag = Uri("xca://\(subCategory.rawValue)")
             subItem.content = subCategory.text
 
-            // ✅ 关键：在 Item 上抓 Ctrl 状态
             subItem.pointerPressed.addHandler { [weak self] _, args in
                 self?.updateCtrlFlagFromPointer(args)
             }
@@ -279,7 +284,6 @@ class MainWindow: Window, @unchecked Sendable {
             item.icon = icon
             item.content = c.text
 
-            // ✅ 关键：在 Item 上抓 Ctrl 状态
             item.pointerPressed.addHandler { [weak self] _, args in
                 self?.updateCtrlFlagFromPointer(args)
             }
@@ -295,7 +299,21 @@ class MainWindow: Window, @unchecked Sendable {
         tabView.canReorderTabs = true
         tabView.allowDrop = true
 
+        // ✅ host：单 tab 时显示 singleFrameHost，多 tab 时显示 tabView
+        contentHost = Grid()
+        contentHost.children.append(tabView)
+        contentHost.children.append(singleFrameHost)
+
+        // 默认先让 tabView 可见，后续 updateTabVisibility 决定
+        tabView.visibility = .visible
+        singleFrameHost.visibility = .collapsed
+
+        navigationView.content = contentHost
+        rootGrid.children.append(navigationView)
+        try? Grid.setRow(navigationView, 1)
+
         ensureAtLeastOneTab()
+        updateTabVisibilityAndSingleHost()
 
         tabView.tabCloseRequested.addHandler { [weak self, weak tabView] sender, args in
             guard let self = self else { return }
@@ -310,23 +328,57 @@ class MainWindow: Window, @unchecked Sendable {
             }
 
             self.ensureAtLeastOneTab()
+            self.updateTabVisibilityAndSingleHost()
         }
 
         tabView.selectionChanged.addHandler { [weak self] _, _ in
             guard let self = self else { return }
+            if self.isSingleTabMode { return } // 单 tab 模式不看 TabView selection
+
             guard let tab = self.tabView.selectedItem as? TabViewItem else { return }
             if let raw = tab.tag as? String, let cat = self.findCategory(byRawValue: raw) {
                 self.currentPageTextBlock.text = cat.text
                 self.selectNavigationItem(for: cat)
             }
         }
-
-        navigationView.content = tabView
-        rootGrid.children.append(navigationView)
-        try? Grid.setRow(navigationView, 1)
     }
 
-    // MARK: - Frame 方案（修复“标题变了页面不变”）
+    // MARK: - 单/多 tab 显示逻辑（不搬 UIElement，只重建页面）
+
+    private func updateTabVisibilityAndSingleHost() {
+        guard let items = tabView.tabItems else { return }
+        let count = Int(items.size)
+
+        if count <= 1 {
+            isSingleTabMode = true
+            tabView.visibility = .collapsed
+            singleFrameHost.visibility = .visible
+            syncSingleHostFromSelectedTab()
+        } else {
+            isSingleTabMode = false
+            singleFrameHost.visibility = .collapsed
+            tabView.visibility = .visible
+        }
+    }
+
+    private func syncSingleHostFromSelectedTab() {
+        // 单 tab 显示：用“页面新实例”，避免同一 UIElement 复挂导致崩溃
+        let cat = currentSelectedCategoryFallback()
+        singleFrameHost.content = createPage(for: cat)
+        currentPageTextBlock.text = cat.text
+        selectNavigationItem(for: cat)
+    }
+
+    private func currentSelectedCategoryFallback() -> any Category {
+        if let tab = tabView.selectedItem as? TabViewItem,
+           let raw = tab.tag as? String,
+           let cat = findCategory(byRawValue: raw) {
+            return cat
+        }
+        return viewModel.selectedCategory
+    }
+
+    // MARK: - Frame / Tab 维护
 
     private func getOrCreateFrame(in tab: TabViewItem) -> Frame {
         if let frame = tab.content as? Frame { return frame }
@@ -382,6 +434,11 @@ class MainWindow: Window, @unchecked Sendable {
         let frame = getOrCreateFrame(in: tab)
         frame.content = createPage(for: category)
 
+        // ✅ 单 tab 模式同时刷新 singleFrameHost（用新实例）
+        if isSingleTabMode {
+            singleFrameHost.content = createPage(for: category)
+        }
+
         currentPageTextBlock.text = category.text
     }
 
@@ -405,6 +462,9 @@ class MainWindow: Window, @unchecked Sendable {
         tabView.tabItems.append(tab)
         tabView.selectedItem = tab
         currentPageTextBlock.text = category.text
+
+        // ✅ 多 tab 了，显示 TabView
+        updateTabVisibilityAndSingleHost()
     }
 
     // MARK: - 页面创建（保持你原来的 switch）
@@ -610,11 +670,9 @@ class MainWindow: Window, @unchecked Sendable {
         forwardButton.isEnabled = !forwardStack.isEmpty
     }
 
-    // ✅ 关键修复：启动时把初始页压栈，避免“第一次不能回退”
     private func seedInitialHistoryIfNeeded() {
         if stack.isEmpty {
-            let initial = viewModel.selectedCategory
-            stack = [initial]
+            stack = [viewModel.selectedCategory]
             forwardStack.removeAll()
             updateNavButtonsState()
         }
@@ -647,15 +705,11 @@ class MainWindow: Window, @unchecked Sendable {
             guard let category = self.findCategory(byRawValue: tag) else { self.openInNewTabRequested = false; return }
             if !category.canSelect { self.openInNewTabRequested = false; return }
 
-            // ✅ 避免重复 push 同一个页面，导致栈异常增长
-            if self.stack.last?.rawValue != category.rawValue {
-                self.forwardStack.removeAll()
-                self.stack.append(category)
-            } else {
-                // 同页重复点击：不新增历史，但 forward 仍然应当清空（和浏览器行为一致）
-                self.forwardStack.removeAll()
-            }
+            // ✅ 关键修复：第一次能回退到 Home（保证 stack 里有初始项）
+            self.seedInitialHistoryIfNeeded()
 
+            self.forwardStack.removeAll()
+            self.stack.append(category)
             self.viewModel.navigateCommand.execute(parameter: category)
             self.updateNavButtonsState()
         }
@@ -681,10 +735,7 @@ class MainWindow: Window, @unchecked Sendable {
             }
         }
 
-        // ✅ 先渲染初始页
         handlePropertyChanged("selectedCategory")
-
-        // ✅ 再把初始页压入历史栈，解决“第一次不能回退”
         seedInitialHistoryIfNeeded()
     }
 
@@ -704,6 +755,11 @@ class MainWindow: Window, @unchecked Sendable {
             openInNewTabRequested = false
 
             selectNavigationItem(for: item)
+
+            // ✅ 选中页变化时，如果是单 tab 模式，刷新 single host
+            if isSingleTabMode {
+                syncSingleHostFromSelectedTab()
+            }
 
         default:
             break

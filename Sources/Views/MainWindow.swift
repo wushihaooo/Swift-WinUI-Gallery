@@ -475,6 +475,19 @@ class MainWindow: Window, @unchecked Sendable {
             return HomePage()
         case MainCategory.all:
             return AllPage()
+        
+        case FundamentalsCategory.resources:
+            return ResourcesPage()
+        case FundamentalsCategory.style:
+            return StylesPage()
+        case FundamentalsCategory.templates:
+            return TemplatesPage()
+        case FundamentalsCategory.customUserControls:
+            return CustomUserControlsPage()
+        case FundamentalsCategory.binding:
+            return BindingPage()
+        case FundamentalsCategory.scratchPad:
+            return ScratchPadPage()
 
         case CollectionsCategory.listView:
             return ListViewPage()
@@ -601,6 +614,25 @@ class MainWindow: Window, @unchecked Sendable {
             return TextBlockPage()
         case TextCategory.textBox:
             return TextBoxPage()
+
+        case StylesCategory.AcrylicBrush:
+            return AcrylicBrushPage()
+        case StylesCategory.animatedIcon:
+            return AnimatedIconPage()
+        case StylesCategory.compactSizing:
+            return CompactSizingPage()
+        case StylesCategory.iconElement:
+            return IconElementPage()
+        case StylesCategory.line:
+            return LinePage()
+        case StylesCategory.shape:
+            return ShapePage()
+        case StylesCategory.radialGradientBrush:
+            return RadialGradientBrushPage()
+        case StylesCategory.systemBackdropsMicaAcrylic:
+            return SystemBackdropsPage()
+        case StylesCategory.themeShadow:
+            return ThemeShadowPage()
 
         default:
             return Grid()

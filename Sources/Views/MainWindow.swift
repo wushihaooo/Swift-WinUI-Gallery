@@ -26,6 +26,7 @@ class MainWindow: Window, @unchecked Sendable {
     private var forwardButton: Button
     private var backButton: Button
     private var stack: [any Category] = []
+    
 
     /// ✅ 由 NavigationViewItem.pointerPressed 捕获 Ctrl 状态
     private var openInNewTabRequested: Bool = false
@@ -117,7 +118,7 @@ class MainWindow: Window, @unchecked Sendable {
 
     private func setupTitleBar() {
         titleBar.name = "TitleBar"
-        titleBar.title = "Swift WinUI 3 Gallery"
+        titleBar.title = ""
 
         titleBar.isBackButtonVisible = false
         titleBar.isPaneToggleButtonVisible = true
@@ -127,6 +128,12 @@ class MainWindow: Window, @unchecked Sendable {
             self.navigationView.isPaneOpen.toggle()
         }
 
+        let subtitleReservedWidth: Double = 200   // subtitle 预留宽度（决定按钮固定在更左/更右）
+        let navButtonsLeftGap: Double = 8         // 按钮距离 subtitle 的固定间距（你主要调这个）
+
+        // =========================================================
+        // App icon
+        // =========================================================
         let appIcon = createImage(
             height: 16,
             width: 16,
@@ -138,55 +145,56 @@ class MainWindow: Window, @unchecked Sendable {
             imageThickness: [8, 0, 8, 0]
         )
 
+        // Title
         let titleText = TextBlock()
         titleText.text = "Swift WinUI 3 Gallery"
         titleText.fontSize = 14
         titleText.verticalAlignment = .center
 
+        // Subtitle (current page)
         currentPageTextBlock.fontSize = 12
         currentPageTextBlock.opacity = 0.75
         currentPageTextBlock.verticalAlignment = .center
-        currentPageTextBlock.margin = Thickness(left: 8, top: 0, right: 16, bottom: 0)
         currentPageTextBlock.text = ""
 
-        let backText = TextBlock()
-        backText.text = "←"
-        backText.verticalAlignment = .center
-        backButton.content = backText
+        // ✅ 固定 subtitle 占位宽度，避免按钮被文字长度挤来挤去
+        currentPageTextBlock.width = subtitleReservedWidth
+        currentPageTextBlock.textTrimming = .characterEllipsis
+        currentPageTextBlock.margin = Thickness(left: 8, top: 0, right: 0, bottom: 0)
+
+        // =========================================================
+        // ✅ Back / Forward buttons (MDL2 icons, no gap)
+        // =========================================================
+        func makeMdl2Icon(_ glyph: String, fontSize: Double = 12) -> FontIcon {
+            let icon = FontIcon()
+            icon.glyph = glyph
+            icon.fontSize = fontSize
+            icon.verticalAlignment = .center
+            return icon
+        }
+
+        // Segoe MDL2 Assets:
+        // Back    = E72B
+        // Forward = E72A
+        backButton.content = makeMdl2Icon("\u{E72B}")
+        forwardButton.content = makeMdl2Icon("\u{E72A}")
+
         backButton.verticalAlignment = .center
-        backButton.margin = Thickness(left: 0, top: 0, right: 4, bottom: 0)
-        backButton.isEnabled = false
-        backButton.click.addHandler { [weak self] _, _ in self?.navigateBack() }
-
-        let forwardText = TextBlock()
-        forwardText.text = "→"
-        forwardText.verticalAlignment = .center
-        forwardButton.content = forwardText
         forwardButton.verticalAlignment = .center
-        forwardButton.margin = Thickness(left: 0, top: 0, right: 12, bottom: 0)
+
+        // ✅ 两按钮之间不要留间隙
+        backButton.margin = Thickness(left: 0, top: 0, right: 0, bottom: 0)
+        forwardButton.margin = Thickness(left: 0, top: 0, right: 0, bottom: 0)
+
+        // （可选）更像标题栏按钮的紧凑手感，可按喜好调整/删除
+        backButton.padding = Thickness(left: 10, top: 6, right: 10, bottom: 6)
+        forwardButton.padding = Thickness(left: 10, top: 6, right: 10, bottom: 6)
+
+        backButton.isEnabled = false
         forwardButton.isEnabled = false
+
+        backButton.click.addHandler { [weak self] _, _ in self?.navigateBack() }
         forwardButton.click.addHandler { [weak self] _, _ in self?.navigateForward() }
-
-        controlsSearchBox.name = "controlsSearchBox"
-        controlsSearchBox.placeholderText = "Search controls and samples..."
-        controlsSearchBox.verticalAlignment = .center
-        controlsSearchBox.minWidth = 320
-
-        // ✅ 放一个“真正可拖拽的空白区”，避免控件把拖拽吃掉
-        let titleBarGrid = Grid()
-        let c0 = ColumnDefinition(); c0.width = GridLength(value: 1, gridUnitType: .auto)
-        let c1 = ColumnDefinition(); c1.width = GridLength(value: 1, gridUnitType: .auto)
-        let c2 = ColumnDefinition(); c2.width = GridLength(value: 1, gridUnitType: .auto)
-        let c3 = ColumnDefinition(); c3.width = GridLength(value: 1, gridUnitType: .auto)
-        let c4 = ColumnDefinition(); c4.width = GridLength(value: 1, gridUnitType: .star) // drag region
-        let c5 = ColumnDefinition(); c5.width = GridLength(value: 1, gridUnitType: .auto)
-
-        titleBarGrid.columnDefinitions.append(c0)
-        titleBarGrid.columnDefinitions.append(c1)
-        titleBarGrid.columnDefinitions.append(c2)
-        titleBarGrid.columnDefinitions.append(c3)
-        titleBarGrid.columnDefinitions.append(c4)
-        titleBarGrid.columnDefinitions.append(c5)
 
         let navButtonsStack = StackPanel()
         navButtonsStack.orientation = .horizontal
@@ -194,31 +202,52 @@ class MainWindow: Window, @unchecked Sendable {
         navButtonsStack.children.append(backButton)
         navButtonsStack.children.append(forwardButton)
 
+        // ✅ 按钮距 subtitle 固定距离（你调 navButtonsLeftGap 就行）
+        navButtonsStack.margin = Thickness(left: navButtonsLeftGap, top: 0, right: 0, bottom: 0)
+
+        // =========================================================
+        // ✅ LeftHeader: icon + title + subtitle + nav buttons
+        // =========================================================
+        let leftHeaderStack = StackPanel()
+        leftHeaderStack.orientation = .horizontal
+        leftHeaderStack.verticalAlignment = .center
+        leftHeaderStack.children.append(appIcon)
+        leftHeaderStack.children.append(titleText)
+        leftHeaderStack.children.append(currentPageTextBlock)
+        leftHeaderStack.children.append(navButtonsStack)
+
+        titleBar.leftHeader = leftHeaderStack
+
+        // =========================================================
+        // Content area: drag region + search box (keep your behavior)
+        // =========================================================
+        controlsSearchBox.name = "controlsSearchBox"
+        controlsSearchBox.placeholderText = "Search controls and samples..."
+        controlsSearchBox.verticalAlignment = .center
+        controlsSearchBox.minWidth = 320
+
+        let contentGrid = Grid()
+        let cc0 = ColumnDefinition(); cc0.width = GridLength(value: 1, gridUnitType: .star) // drag region
+        let cc1 = ColumnDefinition(); cc1.width = GridLength(value: 1, gridUnitType: .auto) // search
+        contentGrid.columnDefinitions.append(cc0)
+        contentGrid.columnDefinitions.append(cc1)
+
         let dragRegion = Border()
         dragRegion.background = SolidColorBrush(Color(a: 0, r: 0, g: 0, b: 0))
         dragRegion.verticalAlignment = .stretch
         dragRegion.horizontalAlignment = .stretch
 
-        titleBarGrid.children.append(appIcon)
-        try? Grid.setColumn(appIcon, 0)
+        contentGrid.children.append(dragRegion)
+        try? Grid.setColumn(dragRegion, 0)
 
-        titleBarGrid.children.append(titleText)
-        try? Grid.setColumn(titleText, 1)
+        contentGrid.children.append(controlsSearchBox)
+        try? Grid.setColumn(controlsSearchBox, 1)
 
-        titleBarGrid.children.append(currentPageTextBlock)
-        try? Grid.setColumn(currentPageTextBlock, 2)
+        titleBar.content = contentGrid
 
-        titleBarGrid.children.append(navButtonsStack)
-        try? Grid.setColumn(navButtonsStack, 3)
-
-        titleBarGrid.children.append(dragRegion)
-        try? Grid.setColumn(dragRegion, 4)
-
-        titleBarGrid.children.append(controlsSearchBox)
-        try? Grid.setColumn(controlsSearchBox, 5)
-
-        titleBar.content = titleBarGrid
-
+        // =========================================================
+        // RightHeader: avatar (keep your behavior)
+        // =========================================================
         let avatar = Border()
         avatar.width = 32
         avatar.height = 32
@@ -235,12 +264,17 @@ class MainWindow: Window, @unchecked Sendable {
 
         titleBar.rightHeader = avatar
 
+        // =========================================================
+        // Attach to root + SetTitleBar
+        // =========================================================
         rootGrid.children.append(titleBar)
         try? Grid.setRow(titleBar, 0)
 
-        // ✅ 关键：启动就 SetTitleBar，否则一开始可能拖不动
+        // ✅ 启动就 SetTitleBar
         try? self.setTitleBar(titleBar)
     }
+
+
 
     // MARK: - Ctrl 检测
 

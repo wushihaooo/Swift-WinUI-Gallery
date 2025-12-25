@@ -117,34 +117,6 @@ class MainWindow: Window, @unchecked Sendable {
         self.title = "Swift WinUI3 Gallery"
     }
 
-    private func createImage(
-        height: Double,
-        width: Double,
-        imagePath: String,
-        imageThickness: [Double]
-    ) -> Image {
-        let image = Image()
-        image.height = height
-        image.width = width
-        image.margin = Thickness(
-            left: imageThickness[0],
-            top: imageThickness[1],
-            right: imageThickness[2],
-            bottom: imageThickness[3]
-        )
-        image.stretch = .uniform
-
-        if imagePath.isEmpty {
-            debugPrint("createImage: empty imagePath, returning empty Image")
-            return image
-        }
-        let uri = Uri(imagePath)
-        let bitmapImage = BitmapImage()
-        bitmapImage.uriSource = uri
-        image.source = bitmapImage
-        return image
-    }
-
     private func setupTitleBar() {
         guard let titleBar = self.titleBar else { return }
 
@@ -162,7 +134,10 @@ class MainWindow: Window, @unchecked Sendable {
         let subtitleReservedWidth: Double = 200
         let navButtonsLeftGap: Double = 8
 
-        let appIcon = createImage(
+        // =========================================================
+        // App icon
+        // =========================================================
+        let appIcon = ImageFactory.createImage(
             height: 16,
             width: 16,
             imagePath: Bundle.module.path(
@@ -170,7 +145,8 @@ class MainWindow: Window, @unchecked Sendable {
                 ofType: "ico",
                 inDirectory: "Assets/Tiles"
             )!,
-            imageThickness: [8, 0, 8, 0]
+            imageThickness: [8, 0, 8, 0],
+            stretch: .fill
         )
 
         let titleText = TextBlock()
@@ -307,6 +283,7 @@ class MainWindow: Window, @unchecked Sendable {
 
     private func setupNavigationView() {
         navigationView.paneDisplayMode = .auto
+        navigationView.compactModeThresholdWidth = 0 // 始终令navigationView不消失
         navigationView.isSettingsVisible = true
         navigationView.openPaneLength = 320
         navigationView.isBackButtonVisible = .collapsed
